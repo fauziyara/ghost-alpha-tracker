@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost Alpha | Genius Terminal Ghost Order Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        ghost: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#b9e5fe',
+                            300: '#7cd4fd',
+                            400: '#36bffa',
+                            500: '#0ca5eb',
+                            600: '#0084c9',
+                            700: '#0169a3',
+                            800: '#065986',
+                            900: '#0b4a6f',
+                            950: '#072f4a',
+                        },
+                        dark: {
+                            50: '#f6f6f6',
+                            100: '#e7e7e7',
+                            200: '#d1d1d1',
+                            300: '#b0b0b0',
+                            400: '#888888',
+                            500: '#6d6d6d',
+                            600: '#5d5d5d',
+                            700: '#4f4f4f',
+                            800: '#454545',
+                            900: '#1a1a2e',
+                            950: '#0a0a14',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { scrollbar-width: thin; scrollbar-color: #1e3a5f #0a0a14; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a14; }
+        ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 3px; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a14; }
+        .glow-blue { box-shadow: 0 0 20px rgba(12, 165, 235, 0.15); }
+        .glow-green { box-shadow: 0 0 10px rgba(34, 197, 94, 0.2); }
+        .glow-red { box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+        .ghost-pulse { animation: ghostPulse 2s ease-in-out infinite; }
+        @keyframes ghostPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-up { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #0ca5eb, #7cd4fd, #36bffa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .glass-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(12, 165, 235, 0.1);
+        }
+        .live-dot {
+            width: 8px; height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: livePulse 1.5s ease-in-out infinite;
+        }
+        @keyframes livePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+        }
+        .stat-card:hover { transform: translateY(-2px); transition: all 0.2s ease; }
+        .row-highlight:hover { background: rgba(12, 165, 235, 0.05); }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-card border-b border-ghost-800/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-ghost-500 to-ghost-700 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold gradient-text">Ghost Alpha</span>
+                        <span class="text-xs text-dark-400 ml-2 hidden sm:inline">by Genius Terminal</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-dark-900/80 border border-dark-700/50">
+                        <div class="live-dot"></div>
+                        <span class="text-xs font-medium text-green-400">LIVE</span>
+                    </div>
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-ghost-950/60 border border-ghost-800/30">
+                        <span class="text-xs text-ghost-300">Tracking</span>
+                        <span class="text-sm font-bold text-ghost-400" id="walletCount">247</span>
+                        <span class="text-xs text-ghost-300">wallets</span>
+                    </div>
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-dark-800 transition">
+                        <svg class="w-5 h-5 text-dark-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-12 fade-in">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ghost-950/40 border border-ghost-800/20 mb-6">
+                <svg class="w-4 h-4 text-ghost-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span class="text-sm text-ghost-300">Built for Genius Terminal Traders</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black mb-4 leading-tight">
+                <span class="gradient-text">Ghost Order</span><br>
+                <span class="text-white">Intelligence</span>
+            </h1>
+            <p class="text-lg text-dark-300 max-w-2xl mx-auto mb-8">
+                Decode hidden whale movements. Track Ghost Orders across chains.
+                Surface alpha before the market reacts.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#dashboard" class="px-8 py-3 bg-gradient-to-r from-ghost-600 to-ghost-500 hover:from-ghost-500 hover:to-ghost-400 rounded-xl font-semibold text-white transition-all glow-blue">
+                    Launch Dashboard →
+                </a>
+                <a href="#features" class="px-8 py-3 border border-dark-700 hover:border-ghost-700 rounded-xl font-medium text-dark-300 hover:text-ghost-300 transition">
+                    Learn More
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            <div class="stat-card glass-card rounded-xl p-5 cursor-default">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-ghost-950/60 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-ghost-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <span class="text-xs text-dark-400 font-medium">Ghost Orders (24h)</span>
+                </div>
+                <div class="text-2xl font-bold text-white" id="ghostOrders24h">1,247</div>
+                <div class="text-xs text-green-400 mt-1">↑ 23% from yesterday</div>
+            </div>
+            <div class="stat-card glass-card rounded-xl p-5 cursor-default">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-green-950/40 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <span class="text-xs text-dark-400 font-medium">Total Volume Tracked</span>
+                </div>
+                <div class="text-2xl font-bold text-white" id="totalVolume">$48.2M</div>
+                <div class="text-xs text-green-400 mt-1">↑ 15% from yesterday</div>
+            </div>
+            <div class="stat-card glass-card rounded-xl p-5 cursor-default">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-purple-950/40 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                    <span class="text-xs text-dark-400 font-medium">Active Wallets</span>
+                </div>
+                <div class="text-2xl font-bold text-white" id="activeWallets">892</div>
+                <div class="text-xs text-ghost-400 mt-1">across 5 chains</div>
+            </div>
+            <div class="stat-card glass-card rounded-xl p-5 cursor-default">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-950/40 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                    </div>
+                    <span class="text-xs text-dark-400 font-medium">Alpha Signals Today</span>
+                </div>
+                <div class="text-2xl font-bold text-white" id="alphaSignals">38</div>
+                <div class="text-xs text-amber-400 mt-1">7 high-confidence</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-xl font-bold text-white">Live Ghost Order Feed</h2>
+                <p class="text-sm text-dark-400">Real-time detection of split orders across chains</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <select id="chainFilter" onchange="filterOrders()" class="bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-dark-300 focus:outline-none focus:border-ghost-600">
+                    <option value="all">All Chains</option>
+                    <option value="ethereum">Ethereum</option>
+                    <option value="base">Base</option>
+                    <option value="bsc">BNB Chain</option>
+                    <option value="arbitrum">Arbitrum</option>
+                    <option value="solana">Solana</option>
+                </select>
+                <select id="sizeFilter" onchange="filterOrders()" class="bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-dark-300 focus:outline-none focus:border-ghost-600">
+                    <option value="all">All Sizes</option>
+                    <option value="whale">Whale (>$100K)</option>
+                    <option value="large">Large ($50-100K)</option>
+                    <option value="medium">Medium ($10-50K)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Ghost Order Table -->
+        <div class="glass-card rounded-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-dark-800">
+                            <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Time</th>
+                            <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Token</th>
+                            <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Chain</th>
+                            <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Side</th>
+                            <th class="text-right px-5 py-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Total Volume</th>
+                            <th class="text-right px-5 py-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Splits</th>
+                            <th class="text-right px-5 py-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Degen Score</th>
+                            <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTable">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alpha Alerts Section -->
+    <section class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-xl font-bold text-white">🔥 Alpha Alerts</h2>
+                <p class="text-sm text-dark-400">High-confidence signals from ghost order analysis</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="alphaAlerts">
+            <!-- Filled by JS -->
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold gradient-text mb-3">How It Works</h2>
+            <p class="text-dark-400 max-w-xl mx-auto">Powered by on-chain intelligence and AI analysis</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card rounded-xl p-6 hover:border-ghost-700/40 transition">
+                <div class="w-12 h-12 rounded-xl bg-ghost-950/60 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-ghost-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-white mb-2">Ghost Detection</h3>
+                <p class="text-sm text-dark-400">Advanced algorithms detect when large orders are split across hundreds of wallets via Genius Terminal's MPC protocol.</p>
+            </div>
+            <div class="glass-card rounded-xl p-6 hover:border-ghost-700/40 transition">
+                <div class="w-12 h-12 rounded-xl bg-purple-950/40 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-white mb-2">AI Alpha Engine</h3>
+                <p class="text-sm text-dark-400">AI-powered analysis surfaces patterns in whale behavior, giving you actionable alpha signals before the market moves.</p>
+            </div>
+            <div class="glass-card rounded-xl p-6 hover:border-ghost-700/40 transition">
+                <div class="w-12 h-12 rounded-xl bg-green-950/40 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-white mb-2">Multi-Chain Intel</h3>
+                <p class="text-sm text-dark-400">Unified tracking across Ethereum, Base, BNB Chain, Arbitrum, and Solana. One dashboard, complete coverage.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supported Chains -->
+    <section class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
+        <div class="glass-card rounded-2xl p-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-2">Supported Chains</h3>
+                    <p class="text-sm text-dark-400">Tracking ghost orders across the most active DeFi ecosystems</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-900/80 border border-dark-700/50">
+                        <div class="w-5 h-5 rounded-full bg-blue-500"></div>
+                        <span class="text-sm font-medium text-dark-200">Ethereum</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-900/80 border border-dark-700/50">
+                        <div class="w-5 h-5 rounded-full bg-blue-400"></div>
+                        <span class="text-sm font-medium text-dark-200">Base</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-900/80 border border-dark-700/50">
+                        <div class="w-5 h-5 rounded-full bg-yellow-500"></div>
+                        <span class="text-sm font-medium text-dark-200">BNB Chain</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-900/80 border border-dark-700/50">
+                        <div class="w-5 h-5 rounded-full bg-blue-600"></div>
+                        <span class="text-sm font-medium text-dark-200">Arbitrum</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-900/80 border border-dark-700/50">
+                        <div class="w-5 h-5 rounded-full bg-purple-500"></div>
+                        <span class="text-sm font-medium text-dark-200">Solana</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
+        <div class="glass-card rounded-2xl p-8 text-center glow-blue">
+            <h3 class="text-2xl font-bold text-white mb-3">Ready to See Through the Ghost?</h3>
+            <p class="text-dark-400 mb-6 max-w-lg mx-auto">Join traders who use Ghost Alpha to decode hidden whale movements and stay ahead of the market.</p>
+            <a href="#dashboard" class="inline-block px-8 py-3 bg-gradient-to-r from-ghost-600 to-ghost-500 hover:from-ghost-500 hover:to-ghost-400 rounded-xl font-semibold text-white transition-all glow-blue">
+                Start Tracking Now →
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-dark-800 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-7 h-7 rounded-md bg-gradient-to-br from-ghost-500 to-ghost-700 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                </div>
+                <span class="text-sm text-dark-400">Ghost Alpha — Built for @GeniusTerminal</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://x.com/geniusterminal" target="_blank" class="text-dark-500 hover:text-ghost-400 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+                <a href="https://geniusterminal.com" target="_blank" class="text-dark-500 hover:text-ghost-400 transition">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const tokens = [
+            { name: 'ETH', full: 'Ethereum', icon: 'Ξ' },
+            { name: 'PEPE', full: 'Pepe', icon: '🐸' },
+            { name: 'ARB', full: 'Arbitrum', icon: '◈' },
+            { name: 'VIRTUAL', full: 'Virtual Protocol', icon: '🔮' },
+            { name: 'AERO', full: 'Aerodrome', icon: '✈️' },
+            { name: 'TOSHI', full: 'Toshi', icon: '🐱' },
+            { name: 'MORPHO', full: 'Morpho', icon: '🦋' },
+            { name: 'HYPE', full: 'Hyperliquid', icon: '⚡' },
+            { name: 'ONDO', full: 'Ondo Finance', icon: '🏦' },
+            { name: 'ENA', full: 'Ethena', icon: '🔺' },
+            { name: 'WIF', full: 'dogwifhat', icon: '🐕' },
+            { name: 'JUP', full: 'Jupiter', icon: '🪐' },
+            { name: 'BNB', full: 'BNB Chain', icon: '⬡' },
+            { name: 'CAKE', full: 'PancakeSwap', icon: '🥞' },
+            { name: 'GMX', full: 'GMX', icon: '📊' },
+        ];
+
+        const chains = ['ethereum', 'base', 'bsc', 'arbitrum', 'solana'];
+        const chainColors = {
+            ethereum: 'bg-blue-500', base: 'bg-blue-400',
+            bsc: 'bg-yellow-500', arbitrum: 'bg-blue-600', solana: 'bg-purple-500'
+        };
+        const chainLabels = {
+            ethereum: 'ETH', base: 'BASE', bsc: 'BSC', arbitrum: 'ARB', solana: 'SOL'
+        };
+
+        function randomFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function randomFloat(min, max) { return (Math.random() * (max - min) + min).toFixed(1); }
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+        }
+        function formatVolume(vol) {
+            if (vol >= 1000000) return '$' + (vol / 1000000).toFixed(1) + 'M';
+            if (vol >= 1000) return '$' + (vol / 1000).toFixed(0) + 'K';
+            return '$' + vol;
+        }
+
+        // Generate mock orders
+        let allOrders = [];
+        function generateOrders(count) {
+            const orders = [];
+            for (let i = 0; i < count; i++) {
+                const token = randomFrom(tokens);
+                const chain = randomFrom(chains);
+                const side = Math.random() > 0.45 ? 'BUY' : 'SELL';
+                const splits = randomInt(12, 487);
+                const avgPerSplit = randomInt(800, 12000);
+                const volume = splits * avgPerSplit;
+                const degenScore = randomInt(15, 98);
+                const minutesAgo = randomInt(0, 1440);
+                const time = new Date(Date.now() - minutesAgo * 60000);
+                const status = minutesAgo < 5 ? 'active' : minutesAgo < 60 ? 'recent' : 'completed';
+
+                orders.push({ token, chain, side, splits, volume, degenScore, time, status });
+            }
+            return orders.sort((a, b) => b.time - a.time);
+        }
+
+        allOrders = generateOrders(50);
+
+        // Render table
+        function renderOrders(orders) {
+            const tbody = document.getElementById('orderTable');
+            tbody.innerHTML = '';
+
+            orders.slice(0, 20).forEach((order, i) => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-dark-800/50 row-highlight transition slide-up';
+                tr.style.animationDelay = `${i * 50}ms`;
+
+                const degenColor = order.degenScore >= 80 ? 'text-red-400 bg-red-950/30' :
+                                   order.degenScore >= 60 ? 'text-amber-400 bg-amber-950/30' :
+                                   order.degenScore >= 40 ? 'text-ghost-400 bg-ghost-950/30' :
+                                   'text-green-400 bg-green-950/30';
+
+                const statusBadge = order.status === 'active' ?
+                    '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-950/40 text-green-400 text-xs"><span class="w-1.5 h-1.5 rounded-full bg-green-400 ghost-pulse"></span>Active</span>' :
+                    order.status === 'recent' ?
+                    '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-ghost-950/40 text-ghost-400 text-xs">Recent</span>' :
+                    '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-dark-800/60 text-dark-400 text-xs">Completed</span>';
+
+                tr.innerHTML = `
+                    <td class="px-5 py-4">
+                        <span class="text-sm font-mono text-dark-300">${formatTime(order.time)}</span>
+                    </td>
+                    <td class="px-5 py-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">${order.token.icon}</span>
+                            <div>
+                                <div class="text-sm font-semibold text-white">${order.token.name}</div>
+                                <div class="text-xs text-dark-500">${order.token.full}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-5 py-4">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md ${chainColors[order.chain]}/10 text-xs font-medium text-dark-200">
+                            <span class="w-2 h-2 rounded-full ${chainColors[order.chain]}"></span>
+                            ${chainLabels[order.chain]}
+                        </span>
+                    </td>
+                    <td class="px-5 py-4">
+                        <span class="inline-flex px-2.5 py-1 rounded-md text-xs font-bold ${order.side === 'BUY' ? 'bg-green-950/40 text-green-400' : 'bg-red-950/40 text-red-400'}">
+                            ${order.side}
+                        </span>
+                    </td>
+                    <td class="px-5 py-4 text-right">
+                        <span class="text-sm font-semibold text-white">${formatVolume(order.volume)}</span>
+                    </td>
+                    <td class="px-5 py-4 text-right">
+                        <span class="text-sm font-mono text-dark-300">${order.splits}</span>
+                    </td>
+                    <td class="px-5 py-4 text-right">
+                        <span class="inline-flex px-2 py-0.5 rounded-md text-xs font-bold ${degenColor}">${order.degenScore}</span>
+                    </td>
+                    <td class="px-5 py-4">${statusBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filter
+        function filterOrders() {
+            const chain = document.getElementById('chainFilter').value;
+            const size = document.getElementById('sizeFilter').value;
+
+            let filtered = [...allOrders];
+            if (chain !== 'all') filtered = filtered.filter(o => o.chain === chain);
+            if (size === 'whale') filtered = filtered.filter(o => o.volume >= 100000);
+            else if (size === 'large') filtered = filtered.filter(o => o.volume >= 50000 && o.volume < 100000);
+            else if (size === 'medium') filtered = filtered.filter(o => o.volume >= 10000 && o.volume < 50000);
+
+            renderOrders(filtered);
+        }
+
+        // Alpha Alerts
+        const alertTemplates = [
+            { icon: '🐋', color: 'border-blue-500/30', badge: 'bg-blue-950/40 text-blue-400', label: 'WHALE ALERT' },
+            { icon: '🚀', color: 'border-green-500/30', badge: 'bg-green-950/40 text-green-400', label: 'MOMENTUM' },
+            { icon: '🎯', color: 'border-purple-500/30', badge: 'bg-purple-950/40 text-purple-400', label: 'ACCUMULATION' },
+            { icon: '⚡', color: 'border-amber-500/30', badge: 'bg-amber-950/40 text-amber-400', label: 'SIGNAL' },
+            { icon: '🔥', color: 'border-red-500/30', badge: 'bg-red-950/40 text-red-400', label: 'HOT' },
+            { icon: '💎', color: 'border-cyan-500/30', badge: 'bg-cyan-950/40 text-cyan-400', label: 'DIAMOND HANDS' },
+        ];
+
+        function generateAlerts() {
+            const container = document.getElementById('alphaAlerts');
+            container.innerHTML = '';
+
+            const alerts = alertTemplates.map(template => {
+                const token = randomFrom(tokens);
+                const volume = formatVolume(randomInt(200000, 5000000));
+                const change = '+' + randomFloat(5, 45) + '%';
+                const mins = randomInt(2, 58);
+
+                return { ...template, token, volume, change, mins };
+            });
+
+            alerts.forEach((alert, i) => {
+                const div = document.createElement('div');
+                div.className = `glass-card rounded-xl p-5 border ${alert.color} hover:scale-[1.02] transition cursor-default fade-in`;
+                div.style.animationDelay = `${i * 100}ms`;
+
+                div.innerHTML = `
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-bold ${alert.badge}">${alert.icon} ${alert.label}</span>
+                        <span class="text-xs text-dark-500">${alert.mins}m ago</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xl">${alert.token.icon}</span>
+                        <span class="text-lg font-bold text-white">${alert.token.name}</span>
+                        <span class="text-sm text-green-400 font-semibold">${alert.change}</span>
+                    </div>
+                    <p class="text-sm text-dark-300 mb-3">Ghost Order detected: ${alert.volume} split across multiple wallets on ${randomFrom(Object.values(chainLabels))}.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-dark-500">Confidence: <span class="text-ghost-400 font-bold">${randomInt(72, 95)}%</span></span>
+                        <button class="text-xs text-ghost-400 hover:text-ghost-300 font-medium transition">View Details →</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Live updates - add new orders periodically
+        function addLiveOrder() {
+            const newOrders = generateOrders(1);
+            allOrders = [...newOrders, ...allOrders].slice(0, 100);
+            filterOrders();
+
+            // Update stats
+            const el = document.getElementById('ghostOrders24h');
+            const current = parseInt(el.textContent.replace(/,/g, ''));
+            el.textContent = (current + 1).toLocaleString();
+        }
+
+        // Init
+        renderOrders(allOrders);
+        generateAlerts();
+
+        // Live updates every 8 seconds
+        setInterval(addLiveOrder, 8000);
+        // Refresh alerts every 30 seconds
+        setInterval(generateAlerts, 30000);
+
+        // Counter animation
+        function animateCounter(el, target, duration = 1000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    el.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    el.textContent = Math.floor(start).toLocaleString();
+                }
+            }, 16);
+        }
+    </script>
+</body>
+</html>
