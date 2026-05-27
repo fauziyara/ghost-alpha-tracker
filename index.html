@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghost Alpha | Multi-Token Ghost Order Intelligence</title>
+    <title>Ghost Alpha | GENIUS Ghost Order Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
                     <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-ghost-500 flex items-center justify-center text-lg">👻</div>
                     <div>
                         <span class="text-lg font-bold gradient-text">Ghost Alpha</span>
-                        <span class="text-xs text-dark-400 ml-2 hidden sm:inline">Multi-Token Intelligence</span>
+                        <span class="text-xs text-dark-400 ml-2 hidden sm:inline">GENIUS Intelligence</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
@@ -80,54 +80,19 @@
         <div class="text-center mb-10 fade-in">
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/40 border border-purple-500/20 mb-6">
                 <span class="text-sm">👻</span>
-                <span class="text-sm text-purple-300">Multi-Token Ghost Order Detection</span>
+                <span class="text-sm text-purple-300">Ghost Order Detection for GENIUS</span>
             </div>
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black mb-4 leading-tight">
                 <span class="gradient-text">Ghost Order</span><br>
                 <span class="text-white">Intelligence</span>
             </h1>
             <p class="text-lg text-dark-300 max-w-2xl mx-auto">
-                Track hidden whale orders across <span class="text-purple-400 font-semibold">multiple tokens</span> on BNB Chain.
+                Track hidden whale orders on <span class="text-purple-400 font-semibold">GENIUS Terminal</span> (BNB Chain).
                 When they split, we find them. 👻
             </p>
         </div>
 
-        <!-- Token Search -->
-        <div class="mb-8 max-w-2xl mx-auto">
-            <div class="glass-card rounded-xl p-4">
-                <div class="flex flex-col sm:flex-row items-stretch gap-3">
-                    <div class="flex-1 relative">
-                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        </div>
-                        <input type="text" id="contractInput" placeholder="Paste BSC token contract address (0x...)" class="w-full pl-10 pr-4 py-3 bg-dark-950 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-purple-500/50 font-mono" onkeydown="if(event.key==='Enter')searchToken()">
-                    </div>
-                    <button onclick="searchToken()" id="searchBtn" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-ghost-500 hover:from-purple-500 hover:to-ghost-400 rounded-lg font-semibold text-white transition-all text-sm whitespace-nowrap">
-                        🔍 Track Ghost Orders
-                    </button>
-                </div>
-                <div id="searchStatus" class="mt-2 text-sm text-dark-400 hidden"></div>
-
-                <!-- Quick Presets -->
-                <div class="flex items-center gap-2 mt-3 flex-wrap">
-                    <span class="text-xs text-dark-500">Quick:</span>
-                    <button onclick="loadPreset('genius')" class="preset-btn px-3 py-1.5 rounded-lg bg-dark-900/80 border border-dark-700/50 text-xs font-medium text-dark-300 hover:border-purple-500/30 hover:text-purple-400 transition flex items-center gap-1.5 active-preset" id="preset-genius">
-                        <span>🔮</span> GENIUS
-                    </button>
-                    <button onclick="loadPreset('cake')" class="preset-btn px-3 py-1.5 rounded-lg bg-dark-900/80 border border-dark-700/50 text-xs font-medium text-dark-300 hover:border-pink-500/30 hover:text-pink-400 transition flex items-center gap-1.5" id="preset-cake">
-                        <span>🥞</span> CAKE
-                    </button>
-                    <button onclick="loadPreset('bsc-usdt')" class="preset-btn px-3 py-1.5 rounded-lg bg-dark-900/80 border border-dark-700/50 text-xs font-medium text-dark-300 hover:border-green-500/30 hover:text-green-400 transition flex items-center gap-1.5" id="preset-bsc-usdt">
-                        <span>💵</span> USDT
-                    </button>
-                    <button onclick="loadPreset('bsc-usdc')" class="preset-btn px-3 py-1.5 rounded-lg bg-dark-900/80 border border-dark-700/50 text-xs font-medium text-dark-300 hover:border-blue-500/30 hover:text-blue-400 transition flex items-center gap-1.5" id="preset-bsc-usdc">
-                        <span>🔵</span> USDC
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Active Token Info -->
+        <!-- Token Info -->
         <div class="glass-card rounded-xl p-4 mb-8 max-w-3xl mx-auto flex items-center justify-between flex-wrap gap-4" id="tokenInfoBar">
             <div class="flex items-center gap-3">
                 <img id="tokenLogo" src="" class="w-8 h-8 rounded-lg" alt="">
@@ -324,27 +289,10 @@
 
     <script>
         // ===== TOKEN DATABASE =====
-        const PRESETS = {
-            genius: {
-                id: 'genius-3', symbol: 'GENIUS', name: 'Genius Terminal',
-                contract: '0x1f12b85aac097e43aa1555b2881e98a51090e9a6',
-                emoji: '🔮'
-            },
-            cake: {
-                id: 'pancakeswap-token', symbol: 'CAKE', name: 'PancakeSwap',
-                contract: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82',
-                emoji: '🥞'
-            },
-            'bsc-usdt': {
-                id: 'tether', symbol: 'USDT', name: 'Tether USD',
-                contract: '0x55d398326f99059fF775485246999027B3197955',
-                emoji: '💵'
-            },
-            'bsc-usdc': {
-                id: 'usd-coin', symbol: 'USDC', name: 'USD Coin',
-                contract: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                emoji: '🔵'
-            }
+        const GENIUS_TOKEN = {
+            id: 'genius-3', symbol: 'GENIUS', name: 'Genius Terminal',
+            contract: '0x1f12b85aac097e43aa1555b2881e98a51090e9a6',
+            image: ''
         };
 
         let currentTokenData = null;
@@ -369,81 +317,17 @@
         function shortAddr(a) { return a.slice(0,6) + '...' + a.slice(-4); }
 
         // ===== SEARCH BY CONTRACT ADDRESS =====
-        async function searchToken() {
-            const input = document.getElementById('contractInput').value.trim();
-            const status = document.getElementById('searchStatus');
-            const btn = document.getElementById('searchBtn');
-
-            if (!input || !input.startsWith('0x')) {
-                status.textContent = '⚠️ Please enter a valid BSC contract address (0x...)';
-                status.className = 'mt-2 text-sm text-amber-400';
-                return;
-            }
-
-            status.textContent = '🔍 Searching token...';
-            status.className = 'mt-2 text-sm text-ghost-400';
-            btn.disabled = true;
-            btn.textContent = '⏳ Loading...';
-
-            try {
-                // Search CoinGecko by contract address
-                const r = await fetch(`https://api.coingecko.com/api/v3/coins/bsc/contract/${input}`);
-                if (!r.ok) throw new Error('Token not found');
-                const d = await r.json();
-
-                currentTokenData = {
-                    id: d.id,
-                    symbol: d.symbol?.toUpperCase(),
-                    name: d.name,
-                    contract: input,
-                    image: d.image?.small
-                };
-                currentPrice = d.market_data?.current_price?.usd || 0;
-
-                // Update UI
-                updateTokenUI(d);
-                generateAndRender();
-
-                status.textContent = `✅ Tracking ${currentTokenData.symbol} (${currentTokenData.name})`;
-                status.className = 'mt-2 text-sm text-green-400';
-
-                // Update preset highlights
-                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active-preset'));
-
-            } catch (e) {
-                status.textContent = '❌ Token not found on BSC. Check the contract address.';
-                status.className = 'mt-2 text-sm text-red-400';
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = '🔍 Track Ghost Orders';
-        }
-
+        // Search removed — GENIUS only
         // ===== LOAD PRESET =====
-        async function loadPreset(key) {
-            const preset = PRESETS[key];
-            if (!preset) return;
-
-            document.getElementById('contractInput').value = preset.contract;
-            document.getElementById('searchStatus').textContent = '';
-            document.getElementById('searchStatus').className = 'mt-2 text-sm text-dark-400 hidden';
-
-            // Highlight active preset
-            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active-preset'));
-            const presetBtn = document.getElementById('preset-' + key);
-            if (presetBtn) presetBtn.classList.add('active-preset');
-
-            currentTokenData = preset;
-
+        async function loadGenius() {
+            currentTokenData = GENIUS_TOKEN;
             try {
-                const r = await fetch(`https://api.coingecko.com/api/v3/coins/${preset.id}`);
+                const r = await fetch('https://api.coingecko.com/api/v3/coins/genius-3');
                 const d = await r.json();
                 currentPrice = d.market_data?.current_price?.usd || 0;
                 updateTokenUI(d);
                 generateAndRender();
-            } catch(e) {
-                console.error('CoinGecko error:', e);
-            }
+            } catch(e) { console.error('CoinGecko:', e); }
         }
 
         // ===== UPDATE TOKEN UI =====
@@ -504,7 +388,6 @@
         // ===== GENERATE DATA =====
         function generateGhostOrders() {
             const now = Math.floor(Date.now()/1000);
-            const token = TOKENS[currentToken];
             const multiplier = currentPrice > 100 ? 100 : currentPrice > 10 ? 1000 : currentPrice > 1 ? 10000 : 1000000;
             return [
                 {id:'GO-001',time:now-180,side:'BUY',totalValue:285*multiplier,splits:47,timeWindow:'12s',confidence:94,wallets:['0x7a25..f8e3','0x3bC4..a1d2','0x9d4E..c7b8','0x2cb9..f1a7','0x8a3D..b2e5'],source:'0xe8f2..d4c6'},
@@ -560,7 +443,7 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="text-xl font-bold text-white">${formatToken(order.totalValue)} ${TOKENS[currentToken].symbol}</div>
+                                    <div class="text-xl font-bold text-white">${formatToken(order.totalValue)} GENIUS</div>
                                 <div class="text-sm text-dark-400">${formatUSD(usd)}</div>
                             </div>
                         </div>
@@ -630,7 +513,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-xl font-bold text-amber-400">${formatToken(w.totalValue)} ${TOKENS[currentToken].symbol}</div>
+                            <div class="text-xl font-bold text-amber-400">${formatToken(w.totalValue)} GENIUS</div>
                             <div class="text-sm text-dark-400">${formatUSD(usd)}</div>
                         </div>
                     </div>
@@ -675,7 +558,7 @@
 
         // ===== INIT =====
         async function init() {
-            await loadPreset('genius');
+            await loadGenius();
             setInterval(fetchTokenData, 30000);
             setInterval(addLiveGhostOrder, 15000);
         }
