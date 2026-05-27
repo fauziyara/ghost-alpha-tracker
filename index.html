@@ -44,6 +44,7 @@
         .token-btn{transition:all 0.2s ease}
         .token-btn:hover{transform:scale(1.05)}
         .token-btn.active{ring:2px}
+        .active-preset{border-color:rgba(168,85,247,0.4)!important;background:rgba(168,85,247,0.15)!important;color:#a855f7!important;ring:2px}
     </style>
 </head>
 <body class="min-h-screen text-white">
@@ -91,13 +92,38 @@
             </p>
         </div>
 
-        <!-- Token Selector -->
-        <div class="mb-8">
-            <div class="text-center mb-4">
-                <span class="text-sm text-dark-400">Select token to monitor:</span>
-            </div>
-            <div class="flex flex-wrap items-center justify-center gap-3" id="tokenSelector">
-                <!-- Filled by JS -->
+        <!-- Token Search -->
+        <div class="mb-8 max-w-2xl mx-auto">
+            <div class="glass-card rounded-xl p-4">
+                <div class="flex flex-col sm:flex-row items-stretch gap-3">
+                    <div class="flex-1 relative">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+                        <input type="text" id="contractInput" placeholder="Paste BSC token contract address (0x...)" class="w-full pl-10 pr-4 py-3 bg-dark-950 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-purple-500/50 font-mono" onkeydown="if(event.key==='Enter')searchToken()">
+                    </div>
+                    <button onclick="searchToken()" id="searchBtn" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-ghost-500 hover:from-purple-500 hover:to-ghost-400 rounded-lg font-semibold text-white transition-all text-sm whitespace-nowrap">
+                        🔍 Track Ghost Orders
+                    </button>
+                </div>
+                <div id="searchStatus" class="mt-2 text-sm text-dark-400 hidden"></div>
+
+                <!-- Quick Presets -->
+                <div class="flex items-center gap-2 mt-3 flex-wrap">
+                    <span class="text-xs text-dark-500">Quick:</span>
+                    <button onclick="loadPreset('genius')" class="preset-btn px-3 py-1.5 rounded-lg bg-dark-900/80 border border-dark-700/50 text-xs font-medium text-dark-300 hover:border-purple-500/30 hover:text-purple-400 transition flex items-center gap-1.5 active-preset" id="preset-genius">
+                        <span>🔮</span> GENIUS
+                    </button>
+                    <button onclick="loadPreset('cake')" class="preset-btn px-3 py-1.5 rounded-lg bg-dark-900/80 border border-dark-700/50 text-xs font-medium text-dark-300 hover:border-pink-500/30 hover:text-pink-400 transition flex items-center gap-1.5" id="preset-cake">
+                        <span>🥞</span> CAKE
+                    </button>
+                    <button onclick="loadPreset('bsc-usdt')" class="preset-btn px-3 py-1.5 rounded-lg bg-dark-900/80 border border-dark-700/50 text-xs font-medium text-dark-300 hover:border-green-500/30 hover:text-green-400 transition flex items-center gap-1.5" id="preset-bsc-usdt">
+                        <span>💵</span> USDT
+                    </button>
+                    <button onclick="loadPreset('bsc-usdc')" class="preset-btn px-3 py-1.5 rounded-lg bg-dark-900/80 border border-dark-700/50 text-xs font-medium text-dark-300 hover:border-blue-500/30 hover:text-blue-400 transition flex items-center gap-1.5" id="preset-bsc-usdc">
+                        <span>🔵</span> USDC
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -298,20 +324,30 @@
 
     <script>
         // ===== TOKEN DATABASE =====
-        const TOKENS = {
+        const PRESETS = {
             genius: {
                 id: 'genius-3', symbol: 'GENIUS', name: 'Genius Terminal',
                 contract: '0x1f12b85aac097e43aa1555b2881e98a51090e9a6',
-                color: 'purple', emoji: '🔮'
+                emoji: '🔮'
             },
             cake: {
                 id: 'pancakeswap-token', symbol: 'CAKE', name: 'PancakeSwap',
                 contract: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82',
-                color: 'pink', emoji: '🥞'
+                emoji: '🥞'
+            },
+            'bsc-usdt': {
+                id: 'tether', symbol: 'USDT', name: 'Tether USD',
+                contract: '0x55d398326f99059fF775485246999027B3197955',
+                emoji: '💵'
+            },
+            'bsc-usdc': {
+                id: 'usd-coin', symbol: 'USDC', name: 'USD Coin',
+                contract: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                emoji: '🔵'
             }
         };
 
-        let currentToken = 'genius';
+        let currentTokenData = null;
         let currentPrice = 0;
         let allTxns = [];
         let ghostOrders = [];
@@ -332,40 +368,111 @@
         }
         function shortAddr(a) { return a.slice(0,6) + '...' + a.slice(-4); }
 
-        // ===== TOKEN SELECTOR =====
-        function renderTokenSelector() {
-            const container = document.getElementById('tokenSelector');
-            container.innerHTML = '';
-            Object.entries(TOKENS).forEach(([key, token]) => {
-                const isActive = key === currentToken;
-                const btn = document.createElement('button');
-                btn.className = `token-btn flex items-center gap-2 px-4 py-2.5 rounded-xl border ${isActive ? 'border-purple-500/40 bg-purple-950/40 ring-2 ring-purple-500/20' : 'border-dark-700/50 bg-dark-900/60 hover:border-dark-600'}`;
-                btn.onclick = () => switchToken(key);
-                btn.innerHTML = `
-                    <span class="text-lg">${token.emoji}</span>
-                    <div class="text-left">
-                        <div class="text-sm font-bold ${isActive ? 'text-purple-400' : 'text-white'}">${token.symbol}</div>
-                        <div class="text-xs text-dark-400">${token.name}</div>
-                    </div>
-                `;
-                container.appendChild(btn);
-            });
+        // ===== SEARCH BY CONTRACT ADDRESS =====
+        async function searchToken() {
+            const input = document.getElementById('contractInput').value.trim();
+            const status = document.getElementById('searchStatus');
+            const btn = document.getElementById('searchBtn');
+
+            if (!input || !input.startsWith('0x')) {
+                status.textContent = '⚠️ Please enter a valid BSC contract address (0x...)';
+                status.className = 'mt-2 text-sm text-amber-400';
+                return;
+            }
+
+            status.textContent = '🔍 Searching token...';
+            status.className = 'mt-2 text-sm text-ghost-400';
+            btn.disabled = true;
+            btn.textContent = '⏳ Loading...';
+
+            try {
+                // Search CoinGecko by contract address
+                const r = await fetch(`https://api.coingecko.com/api/v3/coins/bsc/contract/${input}`);
+                if (!r.ok) throw new Error('Token not found');
+                const d = await r.json();
+
+                currentTokenData = {
+                    id: d.id,
+                    symbol: d.symbol?.toUpperCase(),
+                    name: d.name,
+                    contract: input,
+                    image: d.image?.small
+                };
+                currentPrice = d.market_data?.current_price?.usd || 0;
+
+                // Update UI
+                updateTokenUI(d);
+                generateAndRender();
+
+                status.textContent = `✅ Tracking ${currentTokenData.symbol} (${currentTokenData.name})`;
+                status.className = 'mt-2 text-sm text-green-400';
+
+                // Update preset highlights
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active-preset'));
+
+            } catch (e) {
+                status.textContent = '❌ Token not found on BSC. Check the contract address.';
+                status.className = 'mt-2 text-sm text-red-400';
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '🔍 Track Ghost Orders';
         }
 
-        // ===== SWITCH TOKEN =====
-        async function switchToken(key) {
-            currentToken = key;
-            const token = TOKENS[key];
-            renderTokenSelector();
+        // ===== LOAD PRESET =====
+        async function loadPreset(key) {
+            const preset = PRESETS[key];
+            if (!preset) return;
 
-            // Update labels
+            document.getElementById('contractInput').value = preset.contract;
+            document.getElementById('searchStatus').textContent = '';
+            document.getElementById('searchStatus').className = 'mt-2 text-sm text-dark-400 hidden';
+
+            // Highlight active preset
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active-preset'));
+            const presetBtn = document.getElementById('preset-' + key);
+            if (presetBtn) presetBtn.classList.add('active-preset');
+
+            currentTokenData = preset;
+
+            try {
+                const r = await fetch(`https://api.coingecko.com/api/v3/coins/${preset.id}`);
+                const d = await r.json();
+                currentPrice = d.market_data?.current_price?.usd || 0;
+                updateTokenUI(d);
+                generateAndRender();
+            } catch(e) {
+                console.error('CoinGecko error:', e);
+            }
+        }
+
+        // ===== UPDATE TOKEN UI =====
+        function updateTokenUI(coingeckoData) {
+            const token = currentTokenData;
+            const md = coingeckoData.market_data;
+
+            document.getElementById('tokenLogo').src = coingeckoData.image?.small || token.image || '';
+            document.getElementById('tokenName').textContent = token.symbol;
+            document.getElementById('navToken').textContent = token.symbol;
             document.getElementById('ghostTokenLabel').textContent = token.symbol;
             document.getElementById('allTokenLabel').textContent = token.symbol;
             document.getElementById('whaleTokenLabel').textContent = token.symbol;
-            document.getElementById('navToken').textContent = token.symbol;
 
-            // Fetch new data
-            await fetchTokenData();
+            document.getElementById('tokenPrice').textContent = '$' + currentPrice.toFixed(currentPrice < 1 ? 8 : 4);
+            document.getElementById('navPrice').textContent = '$' + currentPrice.toFixed(currentPrice < 1 ? 6 : 4);
+
+            const ch = md.price_change_percentage_24h || 0;
+            const chTxt = (ch>=0?'+':'') + ch.toFixed(2) + '%';
+            document.getElementById('tokenChange').textContent = chTxt;
+            document.getElementById('tokenChange').className = 'font-bold ' + (ch>=0?'price-up':'price-down');
+            document.getElementById('navChange').textContent = chTxt;
+            document.getElementById('navChange').className = 'text-xs font-medium ' + (ch>=0?'price-up':'price-down');
+            document.getElementById('tokenMcap').textContent = formatUSD(md.market_cap?.usd || 0);
+            document.getElementById('tokenVolume').textContent = formatUSD(md.total_volume?.usd || 0);
+        }
+
+        // ===== GENERATE & RENDER =====
+        function generateAndRender() {
             ghostOrders = generateGhostOrders();
             allTxns = generateAllTxns();
             renderGhostOrders(ghostOrders);
@@ -374,28 +481,14 @@
             updateGhostStats();
         }
 
-        // ===== COINGECKO =====
+        // ===== COINGECKO (for auto-refresh) =====
         async function fetchTokenData() {
+            if (!currentTokenData) return;
             try {
-                const token = TOKENS[currentToken];
-                const r = await fetch(`https://api.coingecko.com/api/v3/coins/${token.id}`);
+                const r = await fetch(`https://api.coingecko.com/api/v3/coins/${currentTokenData.id}`);
                 const d = await r.json();
-                const md = d.market_data;
-                currentPrice = md.current_price.usd;
-
-                document.getElementById('tokenLogo').src = d.image?.small || '';
-                document.getElementById('tokenName').textContent = token.symbol;
-                document.getElementById('tokenPrice').textContent = '$' + currentPrice.toFixed(currentPrice < 1 ? 8 : 4);
-                document.getElementById('navPrice').textContent = '$' + currentPrice.toFixed(currentPrice < 1 ? 6 : 4);
-
-                const ch = md.price_change_percentage_24h;
-                const chTxt = (ch>=0?'+':'') + ch.toFixed(2) + '%';
-                document.getElementById('tokenChange').textContent = chTxt;
-                document.getElementById('tokenChange').className = 'font-bold ' + (ch>=0?'price-up':'price-down');
-                document.getElementById('navChange').textContent = chTxt;
-                document.getElementById('navChange').className = 'text-xs font-medium ' + (ch>=0?'price-up':'price-down');
-                document.getElementById('tokenMcap').textContent = formatUSD(md.market_cap.usd);
-                document.getElementById('tokenVolume').textContent = formatUSD(md.total_volume.usd);
+                currentPrice = d.market_data?.current_price?.usd || 0;
+                updateTokenUI(d);
             } catch(e) { console.error('CoinGecko:', e); }
         }
 
@@ -558,7 +651,8 @@
 
         // ===== LIVE =====
         function addLiveGhostOrder() {
-            const token = TOKENS[currentToken];
+            if (!currentTokenData) return;
+            const token = currentTokenData;
             const multiplier = currentPrice > 100 ? 100 : currentPrice > 10 ? 1000 : currentPrice > 1 ? 10000 : 1000000;
             const sides = ['BUY','SELL'];
             const side = sides[Math.floor(Math.random()*2)];
@@ -581,14 +675,7 @@
 
         // ===== INIT =====
         async function init() {
-            renderTokenSelector();
-            await fetchTokenData();
-            ghostOrders = generateGhostOrders();
-            allTxns = generateAllTxns();
-            renderGhostOrders(ghostOrders);
-            renderAllTxns(allTxns);
-            renderWhaleActivity(ghostOrders);
-            updateGhostStats();
+            await loadPreset('genius');
             setInterval(fetchTokenData, 30000);
             setInterval(addLiveGhostOrder, 15000);
         }
