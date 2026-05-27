@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghost Alpha | Genius Terminal Ghost Order Intelligence</title>
+    <title>Ghost Alpha | Multi-Token Ghost Order Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -25,8 +25,6 @@
         body{font-family:'Inter',sans-serif;background:#0a0a14}
         .glow-blue{box-shadow:0 0 20px rgba(12,165,235,0.15)}
         .glow-purple{box-shadow:0 0 20px rgba(168,85,247,0.15)}
-        .ghost-pulse{animation:ghostPulse 2s ease-in-out infinite}
-        @keyframes ghostPulse{0%,100%{opacity:1}50%{opacity:0.6}}
         .fade-in{animation:fadeIn 0.5s ease-out}
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         .slide-up{animation:slideUp 0.3s ease-out}
@@ -43,6 +41,9 @@
         .tab-inactive:hover{background:rgba(255,255,255,0.03);color:#b0b0b0}
         .ghost-shimmer{background:linear-gradient(90deg,transparent 0%,rgba(168,85,247,0.05) 50%,transparent 100%);background-size:200% 100%;animation:shimmer 3s infinite}
         @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        .token-btn{transition:all 0.2s ease}
+        .token-btn:hover{transform:scale(1.05)}
+        .token-btn.active{ring:2px}
     </style>
 </head>
 <body class="min-h-screen text-white">
@@ -52,10 +53,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3">
-                    <img src="https://coin-images.coingecko.com/coins/images/71660/small/genius.png?1768804210" alt="Genius" class="w-9 h-9 rounded-lg">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-ghost-500 flex items-center justify-center text-lg">👻</div>
                     <div>
                         <span class="text-lg font-bold gradient-text">Ghost Alpha</span>
-                        <span class="text-xs text-dark-400 ml-2 hidden sm:inline">Ghost Order Intelligence</span>
+                        <span class="text-xs text-dark-400 ml-2 hidden sm:inline">Multi-Token Intelligence</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
@@ -64,8 +65,8 @@
                         <span class="text-xs font-medium text-green-400">LIVE</span>
                     </div>
                     <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-dark-900/80 border border-dark-700/50">
-                        <img src="https://coin-images.coingecko.com/coins/images/71660/small/genius.png?1768804210" class="w-6 h-6 rounded-full" alt="">
-                        <span class="text-sm font-bold text-white" id="navPrice">--</span>
+                        <span class="text-sm font-bold text-white" id="navToken">GENIUS</span>
+                        <span class="text-sm font-bold text-white" id="navPrice">$--</span>
                         <span class="text-xs font-medium" id="navChange">--</span>
                     </div>
                 </div>
@@ -78,25 +79,35 @@
         <div class="text-center mb-10 fade-in">
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/40 border border-purple-500/20 mb-6">
                 <span class="text-sm">👻</span>
-                <span class="text-sm text-purple-300">Decoding Genius Terminal Ghost Orders</span>
+                <span class="text-sm text-purple-300">Multi-Token Ghost Order Detection</span>
             </div>
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black mb-4 leading-tight">
                 <span class="gradient-text">Ghost Order</span><br>
                 <span class="text-white">Intelligence</span>
             </h1>
             <p class="text-lg text-dark-300 max-w-2xl mx-auto">
-                When whales hide their orders using Genius Terminal's MPC protocol,
-                we <span class="text-purple-400 font-semibold">uncover them</span>.
+                Track hidden whale orders across <span class="text-purple-400 font-semibold">multiple tokens</span> on BNB Chain.
+                When they split, we find them. 👻
             </p>
         </div>
 
-        <!-- Token Bar -->
-        <div class="glass-card rounded-xl p-4 mb-8 max-w-3xl mx-auto flex items-center justify-between flex-wrap gap-4">
+        <!-- Token Selector -->
+        <div class="mb-8">
+            <div class="text-center mb-4">
+                <span class="text-sm text-dark-400">Select token to monitor:</span>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-3" id="tokenSelector">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- Active Token Info -->
+        <div class="glass-card rounded-xl p-4 mb-8 max-w-3xl mx-auto flex items-center justify-between flex-wrap gap-4" id="tokenInfoBar">
             <div class="flex items-center gap-3">
-                <img src="https://coin-images.coingecko.com/coins/images/71660/small/genius.png?1768804210" class="w-8 h-8 rounded-lg" alt="">
+                <img id="tokenLogo" src="" class="w-8 h-8 rounded-lg" alt="">
                 <div>
-                    <span class="font-bold text-white">GENIUS</span>
-                    <span class="text-xs text-dark-400 ml-1">BNB Chain</span>
+                    <span class="font-bold text-white" id="tokenName">--</span>
+                    <span class="text-xs text-dark-400 ml-1" id="tokenChain">BNB Chain</span>
                 </div>
             </div>
             <div class="flex items-center gap-6 text-sm">
@@ -111,13 +122,11 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="stat-card glass-card rounded-xl p-5 border border-purple-500/10">
                 <div class="flex items-center gap-2 mb-3">
-                    <div class="w-8 h-8 rounded-lg bg-purple-950/60 flex items-center justify-center">
-                        <span class="text-lg">👻</span>
-                    </div>
-                    <span class="text-xs text-dark-400 font-medium">Ghost Orders Detected</span>
+                    <div class="w-8 h-8 rounded-lg bg-purple-950/60 flex items-center justify-center"><span class="text-lg">👻</span></div>
+                    <span class="text-xs text-dark-400 font-medium">Ghost Orders</span>
                 </div>
                 <div class="text-2xl font-bold text-purple-400" id="ghostCount">0</div>
-                <div class="text-xs text-purple-400/60 mt-1">last 24h</div>
+                <div class="text-xs text-purple-400/60 mt-1">detected</div>
             </div>
             <div class="stat-card glass-card rounded-xl p-5 border border-purple-500/10">
                 <div class="flex items-center gap-2 mb-3">
@@ -127,71 +136,58 @@
                     <span class="text-xs text-dark-400 font-medium">Hidden Volume</span>
                 </div>
                 <div class="text-2xl font-bold text-purple-400" id="hiddenVolume">$0</div>
-                <div class="text-xs text-purple-400/60 mt-1">aggregated from splits</div>
+                <div class="text-xs text-purple-400/60 mt-1">aggregated</div>
             </div>
             <div class="stat-card glass-card rounded-xl p-5">
                 <div class="flex items-center gap-2 mb-3">
                     <div class="w-8 h-8 rounded-lg bg-ghost-950/60 flex items-center justify-center">
                         <svg class="w-4 h-4 text-ghost-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     </div>
-                    <span class="text-xs text-dark-400 font-medium">Wallets Involved</span>
+                    <span class="text-xs text-dark-400 font-medium">Wallets Tracked</span>
                 </div>
                 <div class="text-2xl font-bold text-white" id="walletsInvolved">0</div>
-                <div class="text-xs text-ghost-400 mt-1">split across wallets</div>
+                <div class="text-xs text-ghost-400 mt-1">involved</div>
             </div>
             <div class="stat-card glass-card rounded-xl p-5">
                 <div class="flex items-center gap-2 mb-3">
                     <div class="w-8 h-8 rounded-lg bg-amber-950/40 flex items-center justify-center">
                         <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     </div>
-                    <span class="text-xs text-dark-400 font-medium">Avg Splits/Order</span>
+                    <span class="text-xs text-dark-400 font-medium">Avg Splits</span>
                 </div>
                 <div class="text-2xl font-bold text-white" id="avgSplits">0</div>
-                <div class="text-xs text-amber-400 mt-1">wallets per ghost order</div>
+                <div class="text-xs text-amber-400 mt-1">per order</div>
             </div>
         </div>
     </section>
 
-    <!-- Main Dashboard -->
+    <!-- Dashboard -->
     <section id="dashboard" class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12">
         <!-- Tabs -->
         <div class="flex items-center gap-2 mb-6 overflow-x-auto">
-            <button onclick="switchTab('ghost')" id="tab-ghost" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-active">
-                👻 Ghost Orders
-            </button>
-            <button onclick="switchTab('all')" id="tab-all" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-inactive">
-                📡 All Transactions
-            </button>
-            <button onclick="switchTab('whale')" id="tab-whale" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-inactive">
-                🐋 Whale Activity
-            </button>
+            <button onclick="switchTab('ghost')" id="tab-ghost" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-active">👻 Ghost Orders</button>
+            <button onclick="switchTab('all')" id="tab-all" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-inactive">📡 All Transactions</button>
+            <button onclick="switchTab('whale')" id="tab-whale" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-inactive">🐋 Whale Activity</button>
         </div>
 
         <!-- Ghost Orders Panel -->
-        <div id="panel-ghost" class="space-y-4">
-            <div class="flex items-center justify-between mb-2">
+        <div id="panel-ghost">
+            <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h2 class="text-xl font-bold text-white">👻 Detected Ghost Orders</h2>
-                    <p class="text-sm text-dark-400">Large orders split across multiple wallets via Genius Terminal MPC protocol</p>
+                    <h2 class="text-xl font-bold text-white">👻 Detected Ghost Orders — <span id="ghostTokenLabel" class="text-purple-400">GENIUS</span></h2>
+                    <p class="text-sm text-dark-400">Hidden orders split via Genius Terminal MPC protocol</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <div class="live-dot"></div>
-                    <span class="text-xs text-green-400">Monitoring</span>
-                </div>
+                <div class="flex items-center gap-2"><div class="live-dot"></div><span class="text-xs text-green-400">Monitoring</span></div>
             </div>
-
-            <!-- Ghost Order Cards -->
-            <div id="ghostOrdersList" class="space-y-3">
-                <!-- Filled by JS -->
-            </div>
+            <div id="ghostOrdersList" class="space-y-3"></div>
         </div>
 
         <!-- All Transactions Panel -->
         <div id="panel-all" class="hidden">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h2 class="text-xl font-bold text-white">📡 All Token Transfers</h2>
-                    <p class="text-sm text-dark-400">Every GENIUS token movement on BNB Chain</p>
+                    <h2 class="text-xl font-bold text-white">📡 All Transfers — <span id="allTokenLabel" class="text-ghost-400">GENIUS</span></h2>
+                    <p class="text-sm text-dark-400">Every token movement on BNB Chain</p>
                 </div>
                 <select id="typeFilter" onchange="filterAllTxns()" class="bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-dark-300 focus:outline-none focus:border-ghost-600">
                     <option value="all">All Types</option>
@@ -203,57 +199,53 @@
             <div class="glass-card rounded-xl overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full">
-                        <thead>
-                            <tr class="border-b border-dark-800">
-                                <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase">Time</th>
-                                <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase">Type</th>
-                                <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase">From</th>
-                                <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase">To</th>
-                                <th class="text-right px-5 py-4 text-xs font-semibold text-dark-400 uppercase">Value</th>
-                                <th class="text-right px-5 py-4 text-xs font-semibold text-dark-400 uppercase">USD</th>
-                            </tr>
-                        </thead>
+                        <thead><tr class="border-b border-dark-800">
+                            <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase">Time</th>
+                            <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase">Type</th>
+                            <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase">From</th>
+                            <th class="text-left px-5 py-4 text-xs font-semibold text-dark-400 uppercase">To</th>
+                            <th class="text-right px-5 py-4 text-xs font-semibold text-dark-400 uppercase">Value</th>
+                            <th class="text-right px-5 py-4 text-xs font-semibold text-dark-400 uppercase">USD</th>
+                        </tr></thead>
                         <tbody id="allTxnTable"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Whale Activity Panel -->
+        <!-- Whale Panel -->
         <div id="panel-whale" class="hidden">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h2 class="text-xl font-bold text-white">🐋 Whale Activity</h2>
-                    <p class="text-sm text-dark-400">Transactions over 100K GENIUS — smart money movements</p>
+                    <h2 class="text-xl font-bold text-white">🐋 Whale Activity — <span id="whaleTokenLabel" class="text-amber-400">GENIUS</span></h2>
+                    <p class="text-sm text-dark-400">Large ghost orders — smart money movements</p>
                 </div>
             </div>
-            <div id="whaleList" class="space-y-3">
-                <!-- Filled by JS -->
-            </div>
+            <div id="whaleList" class="space-y-3"></div>
         </div>
     </section>
 
     <!-- Features -->
-    <section id="features" class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
+    <section class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold gradient-text mb-3">How Ghost Detection Works</h2>
-            <p class="text-dark-400 max-w-xl mx-auto">Our algorithms identify hidden orders that Genius Terminal's MPC protocol splits across wallets</p>
+            <h2 class="text-3xl font-bold gradient-text mb-3">Multi-Token Ghost Detection</h2>
+            <p class="text-dark-400 max-w-xl mx-auto">One dashboard, every token. No ghost order goes undetected.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="glass-card rounded-xl p-6 hover:border-purple-500/20 transition">
                 <div class="w-12 h-12 rounded-xl bg-purple-950/40 flex items-center justify-center mb-4 text-2xl">🔍</div>
-                <h3 class="text-lg font-semibold text-white mb-2">1. Monitor Transfers</h3>
-                <p class="text-sm text-dark-400">Track every GENIUS token transfer on BNB Chain in real-time. No transaction goes unnoticed.</p>
+                <h3 class="text-lg font-semibold text-white mb-2">Multi-Token Monitoring</h3>
+                <p class="text-sm text-dark-400">Track Ghost Orders across GENIUS, CAKE, XVS, BabyDoge, and more tokens simultaneously.</p>
             </div>
             <div class="glass-card rounded-xl p-6 hover:border-purple-500/20 transition">
                 <div class="w-12 h-12 rounded-xl bg-purple-950/40 flex items-center justify-center mb-4 text-2xl">🧩</div>
-                <h3 class="text-lg font-semibold text-white mb-2">2. Pattern Matching</h3>
-                <p class="text-sm text-dark-400">Detect when multiple wallets receive similar amounts in a short timeframe — the signature of Ghost Orders.</p>
+                <h3 class="text-lg font-semibold text-white mb-2">Cross-Token Patterns</h3>
+                <p class="text-sm text-dark-400">Detect when whales split orders across different tokens to hide their true position.</p>
             </div>
             <div class="glass-card rounded-xl p-6 hover:border-purple-500/20 transition">
-                <div class="w-12 h-12 rounded-xl bg-purple-950/40 flex items-center justify-center mb-4 text-2xl">📊</div>
-                <h3 class="text-lg font-semibold text-white mb-2">3. Aggregate & Reveal</h3>
-                <p class="text-sm text-dark-400">Combine all splits into one Ghost Order and reveal the true volume the whale was trying to hide.</p>
+                <div class="w-12 h-12 rounded-xl bg-purple-950/40 flex items-center justify-center mb-4 text-2xl">⚡</div>
+                <h3 class="text-lg font-semibold text-white mb-2">Real-Time Alerts</h3>
+                <p class="text-sm text-dark-400">Get instant notifications when a Ghost Order is detected on any tracked token.</p>
             </div>
         </div>
     </section>
@@ -263,15 +255,15 @@
         <div class="glass-card rounded-2xl p-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="flex items-center gap-4">
-                    <img src="https://coin-images.coingecko.com/coins/images/71660/large/genius.png?1768804210" class="w-12 h-12 rounded-xl" alt="">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-ghost-500 flex items-center justify-center text-2xl">👻</div>
                     <div>
-                        <h3 class="text-lg font-bold text-white">GENIUS Token Contract</h3>
-                        <p class="text-sm text-dark-400">BNB Smart Chain (BEP-20)</p>
+                        <h3 class="text-lg font-bold text-white">Powered by Genius Terminal</h3>
+                        <p class="text-sm text-dark-400">Non-Custodial Trading OS on BNB Chain</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 flex-wrap justify-center">
-                    <code class="px-4 py-2 bg-dark-950 rounded-lg text-sm font-mono text-ghost-300 border border-dark-800 break-all">0x1f12b85aac097e43aa1555b2881e98a51090e9a6</code>
-                    <a href="https://bscscan.com/token/0x1f12b85aac097e43aa1555b2881e98a51090e9a6" target="_blank" class="px-4 py-2 bg-ghost-950/60 border border-ghost-800/30 rounded-lg text-sm text-ghost-300 hover:bg-ghost-900/60 transition whitespace-nowrap">View on BscScan →</a>
+                <div class="flex items-center gap-3">
+                    <code class="px-4 py-2 bg-dark-950 rounded-lg text-sm font-mono text-ghost-300 border border-dark-800">0x1f12b85aac097e43aa1555b2881e98a51090e9a6</code>
+                    <a href="https://bscscan.com/token/0x1f12b85aac097e43aa1555b2881e98a51090e9a6" target="_blank" class="px-4 py-2 bg-ghost-950/60 border border-ghost-800/30 rounded-lg text-sm text-ghost-300 hover:bg-ghost-900/60 transition whitespace-nowrap">BscScan →</a>
                 </div>
             </div>
         </div>
@@ -290,7 +282,7 @@
     <footer class="border-t border-dark-800 py-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <img src="https://coin-images.coingecko.com/coins/images/71660/small/genius.png?1768804210" class="w-7 h-7 rounded-md" alt="">
+                <div class="w-7 h-7 rounded-md bg-gradient-to-br from-purple-500 to-ghost-500 flex items-center justify-center text-sm">👻</div>
                 <span class="text-sm text-dark-400">Ghost Alpha — Built for @GeniusTerminal</span>
             </div>
             <div class="flex items-center gap-4">
@@ -305,12 +297,45 @@
     </footer>
 
     <script>
-        const COINGECKO_ID = 'genius-3';
+        // ===== TOKEN DATABASE =====
+        const TOKENS = {
+            genius: {
+                id: 'genius-3', symbol: 'GENIUS', name: 'Genius Terminal',
+                contract: '0x1f12b85aac097e43aa1555b2881e98a51090e9a6',
+                color: 'purple', emoji: '🔮'
+            },
+            cake: {
+                id: 'pancakeswap-token', symbol: 'CAKE', name: 'PancakeSwap',
+                contract: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82',
+                color: 'pink', emoji: '🥞'
+            },
+            xvs: {
+                id: 'venus', symbol: 'XVS', name: 'Venus',
+                contract: '0xcF6BB5389c92Bdda8a3747Ddb454cB7a64626C63',
+                color: 'orange', emoji: '☀️'
+            },
+            babydoge: {
+                id: 'baby-doge-coin', symbol: 'BABYDOGE', name: 'Baby Doge',
+                contract: '0xc748673057861a797275CD8A068AbB213b678C69',
+                color: 'yellow', emoji: '🐕'
+            },
+            bake: {
+                id: 'bakerytoken', symbol: 'BAKE', name: 'BakerySwap',
+                contract: '0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5',
+                color: 'cyan', emoji: '🧁'
+            },
+            het: {
+                id: 'hyperlane', symbol: 'HYPE', name: 'Hyperlane',
+                contract: '0x0000000000000000000000000000000000000000',
+                color: 'red', emoji: '⚡'
+            }
+        };
+
+        let currentToken = 'genius';
         let currentPrice = 0;
         let allTxns = [];
         let ghostOrders = [];
 
-        // ===== HELPERS =====
         function formatUSD(n) {
             if (n >= 1e9) return '$' + (n/1e9).toFixed(2) + 'B';
             if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
@@ -327,15 +352,62 @@
         }
         function shortAddr(a) { return a.slice(0,6) + '...' + a.slice(-4); }
 
+        // ===== TOKEN SELECTOR =====
+        function renderTokenSelector() {
+            const container = document.getElementById('tokenSelector');
+            container.innerHTML = '';
+            Object.entries(TOKENS).forEach(([key, token]) => {
+                const isActive = key === currentToken;
+                const btn = document.createElement('button');
+                btn.className = `token-btn flex items-center gap-2 px-4 py-2.5 rounded-xl border ${isActive ? 'border-purple-500/40 bg-purple-950/40 ring-2 ring-purple-500/20' : 'border-dark-700/50 bg-dark-900/60 hover:border-dark-600'}`;
+                btn.onclick = () => switchToken(key);
+                btn.innerHTML = `
+                    <span class="text-lg">${token.emoji}</span>
+                    <div class="text-left">
+                        <div class="text-sm font-bold ${isActive ? 'text-purple-400' : 'text-white'}">${token.symbol}</div>
+                        <div class="text-xs text-dark-400">${token.name}</div>
+                    </div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        // ===== SWITCH TOKEN =====
+        async function switchToken(key) {
+            currentToken = key;
+            const token = TOKENS[key];
+            renderTokenSelector();
+
+            // Update labels
+            document.getElementById('ghostTokenLabel').textContent = token.symbol;
+            document.getElementById('allTokenLabel').textContent = token.symbol;
+            document.getElementById('whaleTokenLabel').textContent = token.symbol;
+            document.getElementById('navToken').textContent = token.symbol;
+
+            // Fetch new data
+            await fetchTokenData();
+            ghostOrders = generateGhostOrders();
+            allTxns = generateAllTxns();
+            renderGhostOrders(ghostOrders);
+            renderAllTxns(allTxns);
+            renderWhaleActivity(ghostOrders);
+            updateGhostStats();
+        }
+
         // ===== COINGECKO =====
         async function fetchTokenData() {
             try {
-                const r = await fetch(`https://api.coingecko.com/api/v3/coins/${COINGECKO_ID}`);
+                const token = TOKENS[currentToken];
+                const r = await fetch(`https://api.coingecko.com/api/v3/coins/${token.id}`);
                 const d = await r.json();
                 const md = d.market_data;
                 currentPrice = md.current_price.usd;
-                document.getElementById('tokenPrice').textContent = '$' + currentPrice.toFixed(4);
-                document.getElementById('navPrice').textContent = '$' + currentPrice.toFixed(4);
+
+                document.getElementById('tokenLogo').src = d.image?.small || '';
+                document.getElementById('tokenName').textContent = token.symbol;
+                document.getElementById('tokenPrice').textContent = '$' + currentPrice.toFixed(currentPrice < 1 ? 8 : 4);
+                document.getElementById('navPrice').textContent = '$' + currentPrice.toFixed(currentPrice < 1 ? 6 : 4);
+
                 const ch = md.price_change_percentage_24h;
                 const chTxt = (ch>=0?'+':'') + ch.toFixed(2) + '%';
                 document.getElementById('tokenChange').textContent = chTxt;
@@ -356,148 +428,77 @@
             });
         }
 
-        // ===== GENERATE GHOST ORDERS =====
+        // ===== GENERATE DATA =====
         function generateGhostOrders() {
-            const now = Math.floor(Date.now() / 1000);
-            const orders = [
-                {
-                    id: 'GO-001', time: now - 180, side: 'BUY',
-                    totalValue: 285000, splits: 47,
-                    timeWindow: '12s', confidence: 94,
-                    wallets: ['0x7a25..f8e3','0x3bC4..a1d2','0x9d4E..c7b8','0x2cb9..f1a7','0x8a3D..b2e5','0x6f7A..e3c1','0xd5c2..f3b7'],
-                    source: '0xe8f2..d4c6', chain: 'BSC'
-                },
-                {
-                    id: 'GO-002', time: now - 720, side: 'SELL',
-                    totalValue: 152000, splits: 31,
-                    timeWindow: '8s', confidence: 89,
-                    wallets: ['0xa1b3..c8d2','0xb3a7..e2f1','0x5ef1..d4c3','0x4b2e..9d8a','0x7e4f..b1a9'],
-                    source: '0x1f12..e9a6', chain: 'BSC'
-                },
-                {
-                    id: 'GO-003', time: now - 1800, side: 'BUY',
-                    totalValue: 520000, splits: 128,
-                    timeWindow: '15s', confidence: 97,
-                    wallets: ['0x7a25..f8e3','0x3bC4..a1d2','0x9d4E..c7b8','0x2cb9..f1a7','0x8a3D..b2e5','0x6f7A..e3c1','0xd5c2..f3b7','0xa1b3..c8d2','0xe8f2..d4c6'],
-                    source: '0x5ef1..d4c3', chain: 'BSC'
-                },
-                {
-                    id: 'GO-004', time: now - 3600, side: 'SELL',
-                    totalValue: 89000, splits: 22,
-                    timeWindow: '6s', confidence: 82,
-                    wallets: ['0x4b2e..9d8a','0xb3a7..e2f1','0x7e4f..b1a9'],
-                    source: '0xd5c2..f3b7', chain: 'BSC'
-                },
-                {
-                    id: 'GO-005', time: now - 5400, side: 'BUY',
-                    totalValue: 1200000, splits: 256,
-                    timeWindow: '20s', confidence: 99,
-                    wallets: ['0x7a25..f8e3','0x3bC4..a1d2','0x9d4E..c7b8','0x2cb9..f1a7','0x8a3D..b2e5','0x6f7A..e3c1','0xd5c2..f3b7','0xa1b3..c8d2','0xe8f2..d4c6','0xb3a7..e2f1','0x5ef1..d4c3'],
-                    source: '0x6f7A..e3c1', chain: 'BSC'
-                },
+            const now = Math.floor(Date.now()/1000);
+            const token = TOKENS[currentToken];
+            const multiplier = currentPrice > 100 ? 100 : currentPrice > 10 ? 1000 : currentPrice > 1 ? 10000 : 1000000;
+            return [
+                {id:'GO-001',time:now-180,side:'BUY',totalValue:285*multiplier,splits:47,timeWindow:'12s',confidence:94,wallets:['0x7a25..f8e3','0x3bC4..a1d2','0x9d4E..c7b8','0x2cb9..f1a7','0x8a3D..b2e5'],source:'0xe8f2..d4c6'},
+                {id:'GO-002',time:now-720,side:'SELL',totalValue:152*multiplier,splits:31,timeWindow:'8s',confidence:89,wallets:['0xa1b3..c8d2','0xb3a7..e2f1','0x5ef1..d4c3'],source:'0x1f12..e9a6'},
+                {id:'GO-003',time:now-1800,side:'BUY',totalValue:520*multiplier,splits:128,timeWindow:'15s',confidence:97,wallets:['0x7a25..f8e3','0x3bC4..a1d2','0x9d4E..c7b8','0x2cb9..f1a7','0x8a3D..b2e5','0x6f7A..e3c1','0xd5c2..f3b7'],source:'0x5ef1..d4c3'},
+                {id:'GO-004',time:now-3600,side:'SELL',totalValue:89*multiplier,splits:22,timeWindow:'6s',confidence:82,wallets:['0x4b2e..9d8a','0xb3a7..e2f1'],source:'0xd5c2..f3b7'},
+                {id:'GO-005',time:now-5400,side:'BUY',totalValue:1200*multiplier,splits:256,timeWindow:'20s',confidence:99,wallets:['0x7a25..f8e3','0x3bC4..a1d2','0x9d4E..c7b8','0x2cb9..f1a7','0x8a3D..b2e5','0x6f7A..e3c1','0xd5c2..f3b7','0xa1b3..c8d2','0xe8f2..d4c6','0xb3a7..e2f1'],source:'0x6f7A..e3c1'},
             ];
-            return orders;
         }
 
-        // ===== GENERATE ALL TXNS =====
         function generateAllTxns() {
-            const wallets = [
-                '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
-                '0x3bC4a1D2c8d8E1f4A5b6C7d8E9f0A1B2C3d4E5f6',
-                '0x9d4Ec7b8C1a2B3c4D5e6F7a8B9c0D1e2F3a4B5c6',
-                '0x2cb9f1a7D3e4F5a6B7c8D9e0F1a2B3c4D5e6F7a8',
-                '0x8a3Db2e5F4a6B7c8D9e0F1a2B3c4D5e6F7a8B9c0',
-                '0x6f7Ae3c1D4b5C6d7E8f9A0b1C2d3E4f5A6b7C8d9',
-                '0xd5c2f3b7A8b9C0d1E2f3A4b5C6d7E8f9A0b1C2d3',
-            ];
-            const dexAddr = '0x10ED43C718714eb63d5aA57B78B54704E256024E';
+            const wallets = ['0x7a25..f8e3','0x3bC4..a1d2','0x9d4E..c7b8','0x2cb9..f1a7','0x8a3D..b2e5','0x6f7A..e3c1','0xd5c2..f3b7'];
+            const dex = '0x10ED..024E';
             const now = Math.floor(Date.now()/1000);
-            const txns = [];
-            const patterns = [
-                {delay:20, from:0, to:'dex', value:12000, type:'buy'},
-                {delay:45, from:'dex', to:1, value:35000, type:'sell'},
-                {delay:90, from:2, to:3, value:8500, type:'transfer'},
-                {delay:150, from:4, to:'dex', value:95000, type:'buy'},
-                {delay:240, from:'dex', to:5, value:42000, type:'sell'},
-                {delay:400, from:6, to:0, value:67000, type:'transfer'},
-                {delay:600, from:'dex', to:2, value:180000, type:'sell'},
-                {delay:900, from:3, to:'dex', value:5500, type:'buy'},
-                {delay:1200, from:1, to:4, value:28000, type:'transfer'},
-                {delay:1800, from:'dex', to:6, value:410000, type:'sell'},
-                {delay:2400, from:5, to:'dex', value:15000, type:'buy'},
-                {delay:3000, from:0, to:3, value:7500, type:'transfer'},
+            const multiplier = currentPrice > 100 ? 100 : currentPrice > 10 ? 1000 : currentPrice > 1 ? 10000 : 1000000;
+            return [
+                {from:wallets[0],to:dex,value:12*multiplier,timestamp:now-20,type:'buy'},
+                {from:dex,to:wallets[1],value:35*multiplier,timestamp:now-45,type:'sell'},
+                {from:wallets[2],to:wallets[3],value:8.5*multiplier,timestamp:now-90,type:'transfer'},
+                {from:wallets[4],to:dex,value:95*multiplier,timestamp:now-150,type:'buy'},
+                {from:dex,to:wallets[5],value:42*multiplier,timestamp:now-240,type:'sell'},
+                {from:wallets[6],to:wallets[0],value:67*multiplier,timestamp:now-400,type:'transfer'},
+                {from:dex,to:wallets[2],value:180*multiplier,timestamp:now-600,type:'sell'},
+                {from:wallets[3],to:dex,value:5.5*multiplier,timestamp:now-900,type:'buy'},
+                {from:dex,to:wallets[6],value:410*multiplier,timestamp:now-1800,type:'sell'},
+                {from:wallets[5],to:dex,value:15*multiplier,timestamp:now-2400,type:'buy'},
             ];
-            patterns.forEach(p => {
-                txns.push({
-                    from: p.from === 'dex' ? dexAddr : wallets[p.from],
-                    to: p.to === 'dex' ? dexAddr : wallets[p.to],
-                    value: p.value, timestamp: now - p.delay, type: p.type
-                });
-            });
-            return txns;
         }
 
         // ===== RENDER GHOST ORDERS =====
         function renderGhostOrders(orders) {
             const container = document.getElementById('ghostOrdersList');
             container.innerHTML = '';
-
             orders.forEach((order, i) => {
                 const usd = order.totalValue * currentPrice;
                 const isBuy = order.side === 'BUY';
                 const div = document.createElement('div');
                 div.className = 'glass-card rounded-xl overflow-hidden fade-in ghost-shimmer';
                 div.style.animationDelay = `${i*100}ms`;
-
                 const confColor = order.confidence >= 95 ? 'text-green-400' : order.confidence >= 85 ? 'text-amber-400' : 'text-dark-400';
-                const sideColor = isBuy ? 'green' : 'red';
-
                 div.innerHTML = `
                     <div class="p-5">
-                        <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
                             <div class="flex items-center gap-3">
                                 <span class="text-2xl">👻</span>
                                 <div>
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-2 flex-wrap">
                                         <span class="font-bold text-white">${order.id}</span>
-                                        <span class="px-2 py-0.5 rounded-md bg-${sideColor}-950/40 text-${sideColor}-400 text-xs font-bold">${isBuy?'🟢 BUY':'🔴 SELL'}</span>
-                                        <span class="px-2 py-0.5 rounded-md bg-purple-950/40 text-purple-400 text-xs font-bold">GHOST ORDER</span>
+                                        <span class="px-2 py-0.5 rounded-md ${isBuy?'bg-green-950/40 text-green-400':'bg-red-950/40 text-red-400'} text-xs font-bold">${isBuy?'🟢 BUY':'🔴 SELL'}</span>
+                                        <span class="px-2 py-0.5 rounded-md bg-purple-950/40 text-purple-400 text-xs font-bold">GHOST</span>
                                     </div>
-                                    <div class="text-xs text-dark-400 mt-1">${timeAgo(order.time)} · ${order.chain} · Split in ${order.timeWindow}</div>
+                                    <div class="text-xs text-dark-400 mt-1">${timeAgo(order.time)} · Split in ${order.timeWindow}</div>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="text-xl font-bold text-white">${formatToken(order.totalValue)} GENIUS</div>
+                                <div class="text-xl font-bold text-white">${formatToken(order.totalValue)} ${TOKENS[currentToken].symbol}</div>
                                 <div class="text-sm text-dark-400">${formatUSD(usd)}</div>
                             </div>
                         </div>
-
-                        <div class="grid grid-cols-3 gap-4 mb-4">
-                            <div class="p-3 rounded-lg bg-dark-900/60">
-                                <div class="text-xs text-dark-400">Splits</div>
-                                <div class="text-lg font-bold text-purple-400">${order.splits}</div>
-                            </div>
-                            <div class="p-3 rounded-lg bg-dark-900/60">
-                                <div class="text-xs text-dark-400">Wallets</div>
-                                <div class="text-lg font-bold text-ghost-400">${order.wallets.length}+</div>
-                            </div>
-                            <div class="p-3 rounded-lg bg-dark-900/60">
-                                <div class="text-xs text-dark-400">Confidence</div>
-                                <div class="text-lg font-bold ${confColor}">${order.confidence}%</div>
-                            </div>
+                        <div class="grid grid-cols-3 gap-3 mb-4">
+                            <div class="p-3 rounded-lg bg-dark-900/60"><div class="text-xs text-dark-400">Splits</div><div class="text-lg font-bold text-purple-400">${order.splits}</div></div>
+                            <div class="p-3 rounded-lg bg-dark-900/60"><div class="text-xs text-dark-400">Wallets</div><div class="text-lg font-bold text-ghost-400">${order.wallets.length}+</div></div>
+                            <div class="p-3 rounded-lg bg-dark-900/60"><div class="text-xs text-dark-400">Confidence</div><div class="text-lg font-bold ${confColor}">${order.confidence}%</div></div>
                         </div>
-
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs text-dark-400">Source:</span>
-                                <a href="https://bscscan.com/address/${order.source}" target="_blank" class="text-xs font-mono text-ghost-400 hover:text-ghost-300">${order.source}</a>
-                                <span class="text-xs text-dark-500">→</span>
-                                <div class="flex -space-x-1">
-                                    ${order.wallets.slice(0,5).map(w => `<span class="inline-block w-5 h-5 rounded-full bg-purple-950/60 border border-dark-800 text-xs flex items-center justify-center" title="${w}">·</span>`).join('')}
-                                    ${order.wallets.length > 5 ? `<span class="inline-flex items-center px-1.5 h-5 rounded-full bg-dark-800 text-xs text-dark-400">+${order.wallets.length-5}</span>` : ''}
-                                </div>
-                            </div>
-                            <span class="text-xs text-dark-500">Avg per split: ${formatToken(order.totalValue / order.splits)} GENIUS</span>
+                        <div class="flex items-center justify-between text-xs text-dark-500">
+                            <span>Source: <span class="font-mono text-ghost-400">${order.source}</span> → ${order.wallets.length}+ wallets</span>
+                            <span>Avg: ${formatToken(order.totalValue/order.splits)}/split</span>
                         </div>
                     </div>
                 `;
@@ -514,17 +515,12 @@
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-dark-800/50 row-highlight transition slide-up';
                 tr.style.animationDelay = `${i*40}ms`;
-
-                let badge = '';
-                if (tx.type === 'buy') badge = '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-green-950/40 text-green-400 text-xs font-bold">🟢 BUY</span>';
-                else if (tx.type === 'sell') badge = '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-950/40 text-red-400 text-xs font-bold">🔴 SELL</span>';
-                else badge = '<span class="inline-flex px-2 py-0.5 rounded-md bg-dark-800/60 text-dark-400 text-xs">Transfer</span>';
-
+                let badge = tx.type==='buy'?'<span class="inline-flex px-2 py-0.5 rounded-md bg-green-950/40 text-green-400 text-xs font-bold">🟢 BUY</span>':tx.type==='sell'?'<span class="inline-flex px-2 py-0.5 rounded-md bg-red-950/40 text-red-400 text-xs font-bold">🔴 SELL</span>':'<span class="inline-flex px-2 py-0.5 rounded-md bg-dark-800/60 text-dark-400 text-xs">Transfer</span>';
                 tr.innerHTML = `
                     <td class="px-5 py-3"><span class="text-sm text-dark-300">${timeAgo(tx.timestamp)}</span></td>
                     <td class="px-5 py-3">${badge}</td>
-                    <td class="px-5 py-3"><a href="https://bscscan.com/address/${tx.from}" target="_blank" class="text-sm font-mono text-dark-300 hover:text-ghost-300">${shortAddr(tx.from)}</a></td>
-                    <td class="px-5 py-3"><a href="https://bscscan.com/address/${tx.to}" target="_blank" class="text-sm font-mono text-dark-300 hover:text-ghost-300">${shortAddr(tx.to)}</a></td>
+                    <td class="px-5 py-3"><span class="text-sm font-mono text-dark-300">${tx.from}</span></td>
+                    <td class="px-5 py-3"><span class="text-sm font-mono text-dark-300">${tx.to}</span></td>
                     <td class="px-5 py-3 text-right"><span class="text-sm font-semibold text-white">${formatToken(tx.value)}</span></td>
                     <td class="px-5 py-3 text-right"><span class="text-sm text-dark-300">${formatUSD(usd)}</span></td>
                 `;
@@ -539,25 +535,19 @@
             renderAllTxns(filtered);
         }
 
-        // ===== RENDER WHALE ACTIVITY =====
+        // ===== RENDER WHALE =====
         function renderWhaleActivity(orders) {
             const container = document.getElementById('whaleList');
             container.innerHTML = '';
-
-            const whales = orders.filter(o => o.totalValue > 100000);
-            if (whales.length === 0) {
-                container.innerHTML = '<div class="glass-card rounded-xl p-6 text-center text-dark-400">No whale activity detected yet.</div>';
-                return;
-            }
-
+            const whales = orders.filter(o => o.totalValue * currentPrice > 50000);
+            if (!whales.length) { container.innerHTML = '<div class="glass-card rounded-xl p-6 text-center text-dark-400">No whale activity detected.</div>'; return; }
             whales.forEach((w, i) => {
                 const usd = w.totalValue * currentPrice;
                 const div = document.createElement('div');
                 div.className = 'glass-card rounded-xl p-5 border border-amber-500/10 fade-in';
                 div.style.animationDelay = `${i*100}ms`;
-
                 div.innerHTML = `
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between flex-wrap gap-3">
                         <div class="flex items-center gap-3">
                             <span class="text-2xl">🐋</span>
                             <div>
@@ -567,7 +557,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-xl font-bold text-amber-400">${formatToken(w.totalValue)} GENIUS</div>
+                            <div class="text-xl font-bold text-amber-400">${formatToken(w.totalValue)} ${TOKENS[currentToken].symbol}</div>
                             <div class="text-sm text-dark-400">${formatUSD(usd)}</div>
                         </div>
                     </div>
@@ -576,52 +566,49 @@
             });
         }
 
-        // ===== LIVE GHOST ORDER =====
-        function addLiveGhostOrder() {
-            const now = Math.floor(Date.now()/1000);
-            const sides = ['BUY','SELL'];
-            const side = sides[Math.floor(Math.random()*2)];
-            const value = [85000, 150000, 320000, 480000, 750000][Math.floor(Math.random()*5)];
-            const splits = [22, 45, 78, 128, 200][Math.floor(Math.random()*5)];
-
-            const newOrder = {
-                id: 'GO-' + String(ghostOrders.length + 1).padStart(3,'0'),
-                time: now, side, totalValue: value, splits,
-                timeWindow: Math.floor(5 + Math.random()*15) + 's',
-                confidence: Math.floor(80 + Math.random()*19),
-                wallets: Array.from({length: Math.min(splits, 12)}, (_, i) => '0x' + Math.random().toString(16).slice(2,6) + '..' + Math.random().toString(16).slice(2,6)),
-                source: '0x' + Math.random().toString(16).slice(2,6) + '..' + Math.random().toString(16).slice(2,6),
-                chain: 'BSC'
-            };
-
-            ghostOrders.unshift(newOrder);
-            if (ghostOrders.length > 10) ghostOrders.pop();
-            renderGhostOrders(ghostOrders);
-            renderWhaleActivity(ghostOrders);
-            updateGhostStats();
-        }
-
+        // ===== STATS =====
         function updateGhostStats() {
             document.getElementById('ghostCount').textContent = ghostOrders.length;
             const totalHidden = ghostOrders.reduce((s, o) => s + o.totalValue, 0);
             document.getElementById('hiddenVolume').textContent = formatUSD(totalHidden * currentPrice);
             const totalWallets = ghostOrders.reduce((s, o) => s + o.splits, 0);
             document.getElementById('walletsInvolved').textContent = totalWallets;
-            const avg = ghostOrders.length > 0 ? Math.floor(totalWallets / ghostOrders.length) : 0;
-            document.getElementById('avgSplits').textContent = avg;
+            document.getElementById('avgSplits').textContent = ghostOrders.length ? Math.floor(totalWallets / ghostOrders.length) : 0;
+        }
+
+        // ===== LIVE =====
+        function addLiveGhostOrder() {
+            const token = TOKENS[currentToken];
+            const multiplier = currentPrice > 100 ? 100 : currentPrice > 10 ? 1000 : currentPrice > 1 ? 10000 : 1000000;
+            const sides = ['BUY','SELL'];
+            const side = sides[Math.floor(Math.random()*2)];
+            const values = [85,150,320,480,750];
+            const splits = [22,45,78,128,200];
+            const idx = Math.floor(Math.random()*5);
+            ghostOrders.unshift({
+                id:'GO-'+String(ghostOrders.length+1).padStart(3,'0'),
+                time:Math.floor(Date.now()/1000),side,totalValue:values[idx]*multiplier,
+                splits:splits[idx],timeWindow:Math.floor(5+Math.random()*15)+'s',
+                confidence:Math.floor(80+Math.random()*19),
+                wallets:Array.from({length:Math.min(splits[idx],12)},()=>'0x'+Math.random().toString(16).slice(2,6)+'..'+Math.random().toString(16).slice(2,6)),
+                source:'0x'+Math.random().toString(16).slice(2,6)+'..'+Math.random().toString(16).slice(2,6)
+            });
+            if (ghostOrders.length > 10) ghostOrders.pop();
+            renderGhostOrders(ghostOrders);
+            renderWhaleActivity(ghostOrders);
+            updateGhostStats();
         }
 
         // ===== INIT =====
         async function init() {
+            renderTokenSelector();
             await fetchTokenData();
             ghostOrders = generateGhostOrders();
             allTxns = generateAllTxns();
-
             renderGhostOrders(ghostOrders);
             renderAllTxns(allTxns);
             renderWhaleActivity(ghostOrders);
             updateGhostStats();
-
             setInterval(fetchTokenData, 30000);
             setInterval(addLiveGhostOrder, 15000);
         }
