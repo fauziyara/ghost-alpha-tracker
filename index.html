@@ -296,6 +296,7 @@
     <script>
         const GENIUS_CONTRACT = '0x1f12b85aac097e43aa1555b2881e98a51090e9a6';
         const COINGECKO_ID = 'genius-3';
+        const BSCSCAN_KEY = 'D5P783P75IJJPYSDYR6K2N9CNVSC5VR2TA';
         let currentPrice = 0;
 
         function formatUSD(n) {
@@ -344,7 +345,7 @@
         // ===== BSCSCAN (REAL) with fallback =====
         async function fetchTransactions() {
             try {
-                const r = await fetch(`https://api.bscscan.com/api?module=account&action=tokentx&contractaddress=${GENIUS_CONTRACT}&page=1&offset=20&sort=desc`);
+                const r = await fetch(`https://api.bscscan.com/api?module=account&action=tokentx&contractaddress=${GENIUS_CONTRACT}&page=1&offset=20&sort=desc&apikey=${BSCSCAN_KEY}`);
                 const d = await r.json();
 
                 if (d.status === '1' && d.result && d.result.length > 0) {
