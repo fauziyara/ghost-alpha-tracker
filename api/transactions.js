@@ -172,8 +172,7 @@ module.exports = async function (req, res) {
     // Fetch CEX data directly from Binance, MEXC, HTX
     const cexTickers = [];
     const cexFetches = [
-      { name: 'Binance', url: 'https://api4.binance.com/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
-      { name: 'Binance-Alt', url: 'https://api1.binance.com/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
+      { name: 'Binance', url: 'https://data-api.binance.vision/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
       { name: 'MEXC', url: 'https://api.mexc.com/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
       { name: 'HTX', url: 'https://api.huobi.pro/market/detail/merged?symbol=geniususdt' },
     ];
