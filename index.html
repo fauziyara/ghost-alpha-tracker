@@ -581,20 +581,26 @@
 
                 // Trading Pairs — DEX + CEX All Markets
                 const allMarkets = [];
+                const dexMap = {};
                 
-                // Add DEX pairs
+                // Add DEX pairs (dedupe by exchange — keep highest volume)
                 if (dex.allPairs && dex.allPairs.length > 0) {
                     dex.allPairs.forEach(p => {
-                        allMarkets.push({
-                            type: 'DEX',
-                            exchange: p.dex || 'Unknown',
-                            pair: (p.baseToken || 'GENIUS') + '/' + (p.quoteToken || 'BNB'),
-                            price: p.price || 0,
-                            volume24h: p.volume24h || 0,
-                            buys: p.txns24h?.buys || 0,
-                            sells: p.txns24h?.sells || 0,
-                        });
+                        const name = (p.dex || 'Unknown').replace(/\s*v?\d+$/i, '').trim();
+                        const vol = p.volume24h || 0;
+                        if (!dexMap[name] || vol > dexMap[name].volume24h) {
+                            dexMap[name] = {
+                                type: 'DEX',
+                                exchange: name,
+                                pair: (p.baseToken || 'GENIUS') + '/' + (p.quoteToken || 'BNB'),
+                                price: p.price || 0,
+                                volume24h: vol,
+                                buys: p.txns24h?.buys || 0,
+                                sells: p.txns24h?.sells || 0,
+                            };
+                        }
                     });
+                    allMarkets.push(...Object.values(dexMap));
                 }
 
                 // Add CEX tickers
