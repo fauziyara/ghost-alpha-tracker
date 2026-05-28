@@ -260,11 +260,11 @@
                         <!-- Background arc -->
                         <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#1e293b" stroke-width="14" stroke-linecap="round"/>
                         <!-- Green zone (buy) -->
-                        <path d="M 20 100 A 80 80 0 0 1 60 35" fill="none" stroke="#22c55e" stroke-width="14" stroke-linecap="round" opacity="0.3"/>
+                        <path d="M 140 35 A 80 80 0 0 1 180 100" fill="none" stroke="#22c55e" stroke-width="14" stroke-linecap="round" opacity="0.3"/>
                         <!-- Yellow zone (neutral) -->
                         <path d="M 60 35 A 80 80 0 0 1 140 35" fill="none" stroke="#eab308" stroke-width="14" stroke-linecap="round" opacity="0.3"/>
                         <!-- Red zone (sell) -->
-                        <path d="M 140 35 A 80 80 0 0 1 180 100" fill="none" stroke="#ef4444" stroke-width="14" stroke-linecap="round" opacity="0.3"/>
+                        <path d="M 20 100 A 80 80 0 0 1 60 35" fill="none" stroke="#ef4444" stroke-width="14" stroke-linecap="round" opacity="0.3"/>
                         <!-- Needle -->
                         <line id="gaugeNeedle" x1="100" y1="100" x2="100" y2="30" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(0, 100, 100)"/>
                         <!-- Center dot -->
@@ -272,9 +272,9 @@
                     </svg>
                 </div>
                 <div class="flex items-center justify-between max-w-md mx-auto mb-4">
-                    <span class="text-sm font-bold text-green-400">🟢 BUY</span>
-                    <span class="text-3xl font-black" id="gaugeLabel">--</span>
                     <span class="text-sm font-bold text-red-400">🔴 SELL</span>
+                    <span class="text-3xl font-black" id="gaugeLabel">--</span>
+                    <span class="text-sm font-bold text-green-400">🟢 BUY</span>
                 </div>
                 <div class="text-sm text-dark-400" id="gaugeSub">Loading...</div>
             </div>
