@@ -13,33 +13,33 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
                     colors: {
-                        ghost: { 50:'#fdf4ff',100:'#fae8ff',200:'#f5d0fe',300:'#f0abfc',400:'#e879f9',500:'#d946ef',600:'#c026d3',700:'#a21caf',800:'#86198f',900:'#701a75',950:'#4a044e' },
-                        dark: { 50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#7c3aed',600:'#1e0a3c',700:'#170830',800:'#110625',900:'#0d0419',950:'#0a0213' }
+                        ghost: { 50:'#f0f9ff',100:'#e0f2fe',200:'#b9e5fe',300:'#7cd4fd',400:'#36bffa',500:'#0ca5eb',600:'#0084c9',700:'#0169a3',800:'#065986',900:'#0b4a6f',950:'#072f4a' },
+                        dark: { 50:'#f6f6f6',100:'#e7e7e7',200:'#d1d1d1',300:'#b0b0b0',400:'#888888',500:'#6d6d6d',600:'#5d5d5d',700:'#4f4f4f',800:'#454545',900:'#1a1a2e',950:'#0a0a14' }
                     }
                 }
             }
         }
     </script>
     <style>
-        *{scrollbar-width:thin;scrollbar-color:#4c1d95 #0a0213}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0a0213}::-webkit-scrollbar-thumb{background:#4c1d95;border-radius:3px}
-        body{font-family:'Inter',sans-serif;background:#0a0213}
-        .glow-blue{box-shadow:0 0 20px rgba(217,70,239,0.15)}
-        .glow-purple{box-shadow:0 0 20px rgba(217,70,239,0.25)}
+        *{scrollbar-width:thin;scrollbar-color:#1e3a5f #0a0a14}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0a0a14}::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:3px}
+        body{font-family:'Inter',sans-serif;background:#0a0a14}
+        .glow-blue{box-shadow:0 0 20px rgba(12,165,235,0.15)}
+        .glow-purple{box-shadow:0 0 20px rgba(168,85,247,0.15)}
         .fade-in{animation:fadeIn 0.5s ease-out}
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         .slide-up{animation:slideUp 0.3s ease-out}
         @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .gradient-text{background:linear-gradient(135deg,#f0abfc,#d946ef,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .glass-card{background:rgba(17,6,37,0.9);backdrop-filter:blur(12px);border:1px solid rgba(139,92,246,0.15)}
+        .gradient-text{background:linear-gradient(135deg,#0ca5eb,#7cd4fd,#36bffa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .glass-card{background:rgba(26,26,46,0.8);backdrop-filter:blur(12px);border:1px solid rgba(12,165,235,0.1)}
         .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:livePulse 1.5s ease-in-out infinite}
         @keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.4)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
         .stat-card:hover{transform:translateY(-2px);transition:all 0.2s ease}
-        .row-highlight:hover{background:rgba(217,70,239,0.06)}
+        .row-highlight:hover{background:rgba(12,165,235,0.05)}
         .price-up{color:#22c55e}.price-down{color:#ef4444}
-        .tab-active{background:rgba(217,70,239,0.15);color:#e879f9;border-color:rgba(217,70,239,0.3)}
-        .tab-inactive{background:transparent;color:#7c3aed;border-color:transparent}
-        .tab-inactive:hover{background:rgba(255,255,255,0.03);color:#a78bfa}
-        .ghost-shimmer{background:linear-gradient(90deg,transparent 0%,rgba(217,70,239,0.06) 50%,transparent 100%);background-size:200% 100%;animation:shimmer 3s infinite}
+        .tab-active{background:rgba(12,165,235,0.15);color:#36bffa;border-color:rgba(12,165,235,0.3)}
+        .tab-inactive{background:transparent;color:#888888;border-color:transparent}
+        .tab-inactive:hover{background:rgba(255,255,255,0.03);color:#b0b0b0}
+        .ghost-shimmer{background:linear-gradient(90deg,transparent 0%,rgba(168,85,247,0.05) 50%,transparent 100%);background-size:200% 100%;animation:shimmer 3s infinite}
         @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
         .token-btn{transition:all 0.2s ease}
         .token-btn:hover{transform:scale(1.05)}
@@ -54,7 +54,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3">
-                    <img src="https://coin-images.coingecko.com/coins/images/71660/small/genius.png?1768804210" class="w-9 h-9 rounded-lg" alt="Specter Terminal">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-ghost-500 flex items-center justify-center text-lg">👻</div>
                     <div>
                         <span class="text-lg font-bold gradient-text">Specter Terminal</span>
                         <span class="text-xs text-dark-400 ml-2 hidden sm:inline">Where Ghosts Become Visible</span>
