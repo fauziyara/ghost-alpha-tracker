@@ -248,9 +248,38 @@
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <h2 class="text-xl font-bold text-white">🐋 Whale Signals — <span id="whaleTokenLabel" class="text-amber-400">GENIUS</span></h2>
-                    <p class="text-sm text-dark-400">Volume spikes & buy/sell imbalance detection</p>
+                    <p class="text-sm text-dark-400">Market pressure gauge & whale detection</p>
                 </div>
             </div>
+
+            <!-- Market Pressure Gauge -->
+            <div class="glass-card rounded-2xl p-8 mb-6 text-center" id="gaugeContainer">
+                <div class="text-sm text-dark-400 font-medium mb-4">MARKET PRESSURE</div>
+                <div class="relative w-full max-w-md mx-auto mb-6" style="height:160px">
+                    <svg viewBox="0 0 200 110" class="w-full h-full">
+                        <!-- Background arc -->
+                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#1e293b" stroke-width="14" stroke-linecap="round"/>
+                        <!-- Green zone (buy) -->
+                        <path d="M 20 100 A 80 80 0 0 1 60 35" fill="none" stroke="#22c55e" stroke-width="14" stroke-linecap="round" opacity="0.3"/>
+                        <!-- Yellow zone (neutral) -->
+                        <path d="M 60 35 A 80 80 0 0 1 140 35" fill="none" stroke="#eab308" stroke-width="14" stroke-linecap="round" opacity="0.3"/>
+                        <!-- Red zone (sell) -->
+                        <path d="M 140 35 A 80 80 0 0 1 180 100" fill="none" stroke="#ef4444" stroke-width="14" stroke-linecap="round" opacity="0.3"/>
+                        <!-- Needle -->
+                        <line id="gaugeNeedle" x1="100" y1="100" x2="100" y2="30" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(0, 100, 100)"/>
+                        <!-- Center dot -->
+                        <circle cx="100" cy="100" r="6" fill="white"/>
+                    </svg>
+                </div>
+                <div class="flex items-center justify-between max-w-md mx-auto mb-4">
+                    <span class="text-sm font-bold text-green-400">🟢 BUY</span>
+                    <span class="text-3xl font-black" id="gaugeLabel">--</span>
+                    <span class="text-sm font-bold text-red-400">🔴 SELL</span>
+                </div>
+                <div class="text-sm text-dark-400" id="gaugeSub">Loading...</div>
+            </div>
+
+            <!-- Signals -->
             <div id="whaleList" class="space-y-3"></div>
         </div>
     </section>
@@ -618,6 +647,44 @@
 
             const dex = window._dexData;
             const buyRatio = dex.txns24h.buys / (dex.txns24h.buys + dex.txns24h.sells || 1);
+
+            // Update gauge needle (0 = full buy, 180 = full sell)
+            const needle = document.getElementById('gaugeNeedle');
+            const gaugeLabel = document.getElementById('gaugeLabel');
+            const gaugeSub = document.getElementById('gaugeSub');
+            const gaugeContainer = document.getElementById('gaugeContainer');
+
+            if (needle) {
+                // Map buyRatio (0-1) to rotation (-90 to +90)
+                // buyRatio 1.0 = -90 (full left/buy), 0.0 = +90 (full right/sell), 0.5 = 0 (center)
+                const rotation = (1 - buyRatio) * 180 - 90;
+                needle.setAttribute('transform', `rotate(${rotation}, 100, 100)`);
+                needle.style.transition = 'transform 1s ease-out';
+
+                // Color the needle based on ratio
+                const color = buyRatio > 0.55 ? '#22c55e' : buyRatio < 0.45 ? '#ef4444' : '#eab308';
+                needle.setAttribute('stroke', color);
+            }
+
+            if (gaugeLabel) {
+                const pct = (buyRatio * 100).toFixed(1);
+                gaugeLabel.textContent = pct + '%';
+                gaugeLabel.className = `text-3xl font-black ${buyRatio > 0.55 ? 'text-green-400' : buyRatio < 0.45 ? 'text-red-400' : 'text-amber-400'}`;
+            }
+
+            if (gaugeSub) {
+                const label = buyRatio > 0.58 ? '🟢 BUYERS DOMINATING — Whale Accumulation' :
+                              buyRatio > 0.52 ? '🟢 Slight Buy Pressure' :
+                              buyRatio < 0.42 ? '🔴 SELLERS DOMINATING — Whale Distribution' :
+                              buyRatio < 0.48 ? '🔴 Slight Sell Pressure' :
+                              '🟡 BALANCED — No Strong Direction';
+                gaugeSub.textContent = label;
+            }
+
+            if (gaugeContainer) {
+                const glow = buyRatio > 0.55 ? 'rgba(34,197,94,0.08)' : buyRatio < 0.45 ? 'rgba(239,68,68,0.08)' : 'rgba(234,179,8,0.08)';
+                gaugeContainer.style.background = `linear-gradient(180deg, ${glow} 0%, transparent 100%)`;
+            }
             const signals = [];
 
             // Signal 1: Buy/Sell Imbalance
