@@ -13,33 +13,33 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
                     colors: {
-                        ghost: { 50:'#f0fdfa',100:'#ccfbf1',200:'#99f6e4',300:'#5eead4',400:'#2dd4bf',500:'#14b8a6',600:'#0d9488',700:'#0f766e',800:'#115e59',900:'#134e4a',950:'#042f2e' },
-                        dark: { 50:'#f8fafc',100:'#e2e8f0',200:'#cbd5e1',300:'#94a3b8',400:'#64748b',500:'#475569',600:'#334155',700:'#1e293b',800:'#162032',900:'#0f172a',950:'#0a0f1e' }
+                        ghost: { 50:'#fdf4ff',100:'#fae8ff',200:'#f5d0fe',300:'#f0abfc',400:'#e879f9',500:'#d946ef',600:'#c026d3',700:'#a21caf',800:'#86198f',900:'#701a75',950:'#4a044e' },
+                        dark: { 50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#7c3aed',600:'#1e0a3c',700:'#170830',800:'#110625',900:'#0d0419',950:'#0a0213' }
                     }
                 }
             }
         }
     </script>
     <style>
-        *{scrollbar-width:thin;scrollbar-color:#4c1d95 #0a0f1e}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0a0f1e}::-webkit-scrollbar-thumb{background:#4c1d95;border-radius:3px}
-        body{font-family:'Inter',sans-serif;background:#0a0f1e}
-        .glow-blue{box-shadow:0 0 20px rgba(6,182,212,0.15)}
-        .glow-purple{box-shadow:0 0 20px rgba(139,92,246,0.2)}
+        *{scrollbar-width:thin;scrollbar-color:#4c1d95 #0a0213}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0a0213}::-webkit-scrollbar-thumb{background:#4c1d95;border-radius:3px}
+        body{font-family:'Inter',sans-serif;background:#0a0213}
+        .glow-blue{box-shadow:0 0 20px rgba(217,70,239,0.15)}
+        .glow-purple{box-shadow:0 0 20px rgba(217,70,239,0.25)}
         .fade-in{animation:fadeIn 0.5s ease-out}
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         .slide-up{animation:slideUp 0.3s ease-out}
         @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .gradient-text{background:linear-gradient(135deg,#a78bfa,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .glass-card{background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);border:1px solid rgba(139,92,246,0.12)}
+        .gradient-text{background:linear-gradient(135deg,#f0abfc,#d946ef,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .glass-card{background:rgba(17,6,37,0.9);backdrop-filter:blur(12px);border:1px solid rgba(139,92,246,0.15)}
         .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:livePulse 1.5s ease-in-out infinite}
         @keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.4)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
         .stat-card:hover{transform:translateY(-2px);transition:all 0.2s ease}
-        .row-highlight:hover{background:rgba(139,92,246,0.06)}
+        .row-highlight:hover{background:rgba(217,70,239,0.06)}
         .price-up{color:#22c55e}.price-down{color:#ef4444}
-        .tab-active{background:rgba(139,92,246,0.15);color:#a78bfa;border-color:rgba(139,92,246,0.3)}
-        .tab-inactive{background:transparent;color:#64748b;border-color:transparent}
-        .tab-inactive:hover{background:rgba(255,255,255,0.03);color:#94a3b8}
-        .ghost-shimmer{background:linear-gradient(90deg,transparent 0%,rgba(139,92,246,0.06) 50%,transparent 100%);background-size:200% 100%;animation:shimmer 3s infinite}
+        .tab-active{background:rgba(217,70,239,0.15);color:#e879f9;border-color:rgba(217,70,239,0.3)}
+        .tab-inactive{background:transparent;color:#7c3aed;border-color:transparent}
+        .tab-inactive:hover{background:rgba(255,255,255,0.03);color:#a78bfa}
+        .ghost-shimmer{background:linear-gradient(90deg,transparent 0%,rgba(217,70,239,0.06) 50%,transparent 100%);background-size:200% 100%;animation:shimmer 3s infinite}
         @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
         .token-btn{transition:all 0.2s ease}
         .token-btn:hover{transform:scale(1.05)}
