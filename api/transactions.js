@@ -60,12 +60,22 @@ module.exports = async function (req, res) {
           dex: main.dexId,
           baseToken: main.baseToken?.symbol,
           quoteToken: main.quoteToken?.symbol,
-          allPairs: pairs.map(p => ({
-            dex: p.dexId,
-            price: parseFloat(p.priceUsd) || 0,
-            volume24h: p.volume?.h24 || 0,
-            txns24h: { buys: p.txns?.h24?.buys || 0, sells: p.txns?.h24?.sells || 0 },
-          })),
+          allPairs: (() => {
+            const map = {};
+            pairs.forEach(p => {
+              const name = (p.dexId || 'unknown').replace(/\s*v?\d+$/i, '').trim();
+              const vol = p.volume?.h24 || 0;
+              if (!map[name] || vol > (map[name].volume?.h24 || 0)) {
+                map[name] = p;
+              }
+            });
+            return Object.values(map).map(p => ({
+              dex: (p.dexId || 'unknown').replace(/\s*v?\d+$/i, '').trim(),
+              price: parseFloat(p.priceUsd) || 0,
+              volume24h: p.volume?.h24 || 0,
+              txns24h: { buys: p.txns?.h24?.buys || 0, sells: p.txns?.h24?.sells || 0 },
+            }));
+          })(),
         };
       }
     } catch (e) { console.error('DexScreener:', e); }
@@ -162,30 +172,26 @@ module.exports = async function (req, res) {
     // Fetch CEX data directly from Binance, MEXC, HTX
     const cexTickers = [];
     const cexFetches = [
-      { name: 'Binance', url: 'https://api.binance.com/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
+      { name: 'Binance', url: 'https://api4.binance.com/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
+      { name: 'Binance-Alt', url: 'https://api1.binance.com/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
       { name: 'MEXC', url: 'https://api.mexc.com/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
       { name: 'HTX', url: 'https://api.huobi.pro/market/detail/merged?symbol=geniususdt' },
     ];
     
-    await Promise.all(cexFetches.map(async ({ name, url }) => {
+    // Try Binance endpoints first, fallback to others
+    let binanceOk = false;
+    for (const { name, url } of cexFetches) {
       try {
-        const r = await fetch(url);
+        const c = new AbortController();
+        const t = setTimeout(() => c.abort(), 5000);
+        const r = await fetch(url, { signal: c.signal });
+        clearTimeout(t);
         const d = await r.json();
-        if (name === 'HTX' && d.status === 'ok') {
-          const t = d.tick;
+        
+        if (name.startsWith('Binance') && d.symbol && !binanceOk) {
+          binanceOk = true;
           cexTickers.push({
-            exchange: 'HTX',
-            pair: 'GENIUS/USDT',
-            price: t.close || 0,
-            volume24h: t.vol || 0,
-            high24h: t.high || 0,
-            low24h: t.low || 0,
-            change24h: ((t.close - t.open) / t.open * 100) || 0,
-            trades24h: t.count || 0,
-          });
-        } else if (d.symbol) {
-          cexTickers.push({
-            exchange: name,
+            exchange: 'Binance',
             pair: 'GENIUS/USDT',
             price: parseFloat(d.lastPrice) || 0,
             volume24h: parseFloat(d.quoteVolume) || 0,
@@ -194,9 +200,32 @@ module.exports = async function (req, res) {
             change24h: parseFloat(d.priceChangePercent) || 0,
             trades24h: parseInt(d.count) || 0,
           });
+        } else if (name === 'MEXC' && d.symbol) {
+          cexTickers.push({
+            exchange: 'MEXC',
+            pair: 'GENIUS/USDT',
+            price: parseFloat(d.lastPrice) || 0,
+            volume24h: parseFloat(d.quoteVolume) || 0,
+            high24h: parseFloat(d.highPrice) || 0,
+            low24h: parseFloat(d.lowPrice) || 0,
+            change24h: parseFloat(d.priceChangePercent) || 0,
+            trades24h: parseInt(d.count) || 0,
+          });
+        } else if (name === 'HTX' && d.status === 'ok') {
+          const tk = d.tick;
+          cexTickers.push({
+            exchange: 'HTX',
+            pair: 'GENIUS/USDT',
+            price: tk.close || 0,
+            volume24h: tk.vol || 0,
+            high24h: tk.high || 0,
+            low24h: tk.low || 0,
+            change24h: ((tk.close - tk.open) / tk.open * 100) || 0,
+            trades24h: tk.count || 0,
+          });
         }
-      } catch (e) { console.error(`${name}:`, e); }
-    }));
+      } catch (e) { console.error(`${name}:`, e.message); }
+    }
 
     // Also try CoinGecko for any extra exchanges
     try {
