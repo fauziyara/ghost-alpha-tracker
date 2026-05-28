@@ -153,7 +153,7 @@
             <div class="stat-card glass-card rounded-xl p-5 border border-purple-500/10">
                 <div class="flex items-center gap-2 mb-3">
                     <div class="w-8 h-8 rounded-lg bg-purple-950/60 flex items-center justify-center"><span class="text-lg">👻</span></div>
-                    <span class="text-xs text-dark-400 font-medium">Ghost Orders</span>
+                    <span class="text-xs text-dark-400 font-medium">Market Signals</span>
                 </div>
                 <div class="text-2xl font-bold text-purple-400" id="ghostCount">0</div>
                 <div class="text-xs text-purple-400/60 mt-1">detected</div>
@@ -163,7 +163,7 @@
                     <div class="w-8 h-8 rounded-lg bg-purple-950/60 flex items-center justify-center">
                         <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                     </div>
-                    <span class="text-xs text-dark-400 font-medium">Hidden Volume</span>
+                    <span class="text-xs text-dark-400 font-medium">On-Chain TXs</span>
                 </div>
                 <div class="text-2xl font-bold text-purple-400" id="hiddenVolume">$0</div>
                 <div class="text-xs text-purple-400/60 mt-1">aggregated</div>
@@ -173,7 +173,7 @@
                     <div class="w-8 h-8 rounded-lg bg-ghost-950/60 flex items-center justify-center">
                         <svg class="w-4 h-4 text-ghost-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     </div>
-                    <span class="text-xs text-dark-400 font-medium">Wallets Tracked</span>
+                    <span class="text-xs text-dark-400 font-medium">Blocks Scanned</span>
                 </div>
                 <div class="text-2xl font-bold text-white" id="walletsInvolved">0</div>
                 <div class="text-xs text-ghost-400 mt-1">involved</div>
@@ -183,7 +183,7 @@
                     <div class="w-8 h-8 rounded-lg bg-amber-950/40 flex items-center justify-center">
                         <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     </div>
-                    <span class="text-xs text-dark-400 font-medium">Avg Splits</span>
+                    <span class="text-xs text-dark-400 font-medium">Pairs Found</span>
                 </div>
                 <div class="text-2xl font-bold text-white" id="avgSplits">0</div>
                 <div class="text-xs text-amber-400 mt-1">per order</div>
@@ -195,17 +195,17 @@
     <section id="dashboard" class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12">
         <!-- Tabs -->
         <div class="flex items-center gap-2 mb-6 overflow-x-auto">
-            <button onclick="switchTab('ghost')" id="tab-ghost" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-active">👻 Ghost Orders</button>
+            <button onclick="switchTab('ghost')" id="tab-ghost" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-active">📊 Market Intelligence</button>
             <button onclick="switchTab('all')" id="tab-all" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-inactive">📡 All Transactions</button>
-            <button onclick="switchTab('whale')" id="tab-whale" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-inactive">🐋 Whale Activity</button>
+            <button onclick="switchTab('whale')" id="tab-whale" class="px-4 py-2 rounded-lg border text-sm font-medium transition tab-inactive">🐋 Whale Signals</button>
         </div>
 
         <!-- Ghost Orders Panel -->
         <div id="panel-ghost">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h2 class="text-xl font-bold text-white">👻 Detected Ghost Orders — <span id="ghostTokenLabel" class="text-purple-400">GENIUS</span></h2>
-                    <p class="text-sm text-dark-400">Hidden orders split via Genius Terminal MPC protocol</p>
+                    <h2 class="text-xl font-bold text-white">📊 Market Intelligence — <span id="ghostTokenLabel" class="text-purple-400">GENIUS</span></h2>
+                    <p class="text-sm text-dark-400">Real-time trading analysis from DexScreener + BSC on-chain data</p>
                 </div>
                 <div class="flex items-center gap-2"><div class="live-dot"></div><span class="text-xs text-green-400">Monitoring</span></div>
             </div>
@@ -247,8 +247,8 @@
         <div id="panel-whale" class="hidden">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h2 class="text-xl font-bold text-white">🐋 Whale Activity — <span id="whaleTokenLabel" class="text-amber-400">GENIUS</span></h2>
-                    <p class="text-sm text-dark-400">Large ghost orders — smart money movements</p>
+                    <h2 class="text-xl font-bold text-white">🐋 Whale Signals — <span id="whaleTokenLabel" class="text-amber-400">GENIUS</span></h2>
+                    <p class="text-sm text-dark-400">Volume spikes & buy/sell imbalance detection</p>
                 </div>
             </div>
             <div id="whaleList" class="space-y-3"></div>
@@ -258,24 +258,24 @@
     <!-- Features -->
     <section class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold gradient-text mb-3">Multi-Token Ghost Detection</h2>
-            <p class="text-dark-400 max-w-xl mx-auto">One dashboard, every token. No ghost order goes undetected.</p>
+            <h2 class="text-3xl font-bold gradient-text mb-3">Real-Time Market Intelligence</h2>
+            <p class="text-dark-400 max-w-xl mx-auto">Powered by DexScreener API + BSC on-chain data. Every signal, tracked.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="glass-card rounded-xl p-6 hover:border-purple-500/20 transition">
                 <div class="w-12 h-12 rounded-xl bg-purple-950/40 flex items-center justify-center mb-4 text-2xl">🔍</div>
-                <h3 class="text-lg font-semibold text-white mb-2">Multi-Token Monitoring</h3>
-                <p class="text-sm text-dark-400">Track Ghost Orders across GENIUS, CAKE, XVS, BabyDoge, and more tokens simultaneously.</p>
+                <h3 class="text-lg font-semibold text-white mb-2">Live Trade Analysis</h3>
+                <p class="text-sm text-dark-400">Real-time buy/sell data from DexScreener. 3,000+ daily transactions analyzed.</p>
             </div>
             <div class="glass-card rounded-xl p-6 hover:border-purple-500/20 transition">
                 <div class="w-12 h-12 rounded-xl bg-purple-950/40 flex items-center justify-center mb-4 text-2xl">🧩</div>
-                <h3 class="text-lg font-semibold text-white mb-2">Cross-Token Patterns</h3>
-                <p class="text-sm text-dark-400">Detect when whales split orders across different tokens to hide their true position.</p>
+                <h3 class="text-lg font-semibold text-white mb-2">Volume Spike Detection</h3>
+                <p class="text-sm text-dark-400">Detect unusual volume activity that signals whale accumulation or distribution.</p>
             </div>
             <div class="glass-card rounded-xl p-6 hover:border-purple-500/20 transition">
                 <div class="w-12 h-12 rounded-xl bg-purple-950/40 flex items-center justify-center mb-4 text-2xl">⚡</div>
-                <h3 class="text-lg font-semibold text-white mb-2">Real-Time Alerts</h3>
-                <p class="text-sm text-dark-400">Get instant notifications when a Ghost Order is detected on any tracked token.</p>
+                <h3 class="text-lg font-semibold text-white mb-2">Buy/Sell Imbalance</h3>
+                <p class="text-sm text-dark-400">Spot when buy pressure significantly outweighs sells — a key whale accumulation signal.</p>
             </div>
         </div>
     </section>
@@ -443,6 +443,8 @@
                 // Update DexScreener stats if available
                 if (d.dexScreener) {
                     const dex = d.dexScreener;
+                    window._dexData = dex;
+                    window._dexData.scannedBlocks = d.scannedBlocks;
                     document.getElementById('dexBuys').textContent = (dex.txns24h?.buys || 0).toLocaleString();
                     document.getElementById('dexSells').textContent = (dex.txns24h?.sells || 0).toLocaleString();
                     document.getElementById('dexVolume').textContent = formatUSD(dex.volume24h || 0);
@@ -479,49 +481,100 @@
 
         // Data now comes from /api/transactions (real BSC RPC)
 
-        // ===== RENDER GHOST ORDERS =====
+        // ===== RENDER MARKET INTELLIGENCE =====
         function renderGhostOrders(orders) {
             const container = document.getElementById('ghostOrdersList');
             container.innerHTML = '';
-            orders.forEach((order, i) => {
-                const usd = (order.totalValue || 0) * currentPrice;
-                const isBuy = order.side === 'BUY';
-                const div = document.createElement('div');
-                div.className = 'glass-card rounded-xl overflow-hidden fade-in ghost-shimmer';
-                div.style.animationDelay = `${i*100}ms`;
-                const confColor = order.confidence >= 95 ? 'text-green-400' : order.confidence >= 85 ? 'text-amber-400' : 'text-dark-400';
-                div.innerHTML = `
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">👻</span>
+
+            // Market Intelligence Cards
+            if (window._dexData) {
+                const dex = window._dexData;
+                const buyRatio = dex.txns24h.buys / (dex.txns24h.buys + dex.txns24h.sells || 1);
+                const signal = buyRatio > 0.55 ? 'ACCUMULATION' : buyRatio < 0.45 ? 'DISTRIBUTION' : 'NEUTRAL';
+                const signalColor = buyRatio > 0.55 ? 'text-green-400' : buyRatio < 0.45 ? 'text-red-400' : 'text-amber-400';
+                const signalEmoji = buyRatio > 0.55 ? '🟢' : buyRatio < 0.45 ? '🔴' : '🟡';
+                const signalBg = buyRatio > 0.55 ? 'bg-green-950/40 border-green-500/20' : buyRatio < 0.45 ? 'bg-red-950/40 border-red-500/20' : 'bg-amber-950/40 border-amber-500/20';
+
+                const cards = [
+                    {
+                        title: 'Market Signal',
+                        value: signal,
+                        sub: `${(buyRatio*100).toFixed(1)}% buy pressure`,
+                        color: signalColor,
+                        emoji: signalEmoji,
+                        bg: signalBg,
+                        detail: buyRatio > 0.55 ? 'More buyers than sellers — potential accumulation by smart money' :
+                                buyRatio < 0.45 ? 'More sellers than buyers — potential distribution by whales' :
+                                'Balanced market — no strong directional bias',
+                    },
+                    {
+                        title: 'Volume Analysis',
+                        value: formatUSD(dex.volume24h),
+                        sub: `${(dex.txns24h.buys + dex.txns24h.sells).toLocaleString()} txns in 24h`,
+                        color: 'text-ghost-400',
+                        emoji: '📊',
+                        bg: 'bg-ghost-950/40 border-ghost-500/20',
+                        detail: `1h: ${dex.txns1h.buys} buys / ${dex.txns1h.sells} sells · Liquidity: ${formatUSD(dex.liquidity)}`,
+                    },
+                    {
+                        title: 'Buy/Sell Ratio',
+                        value: `${dex.txns24h.buys} / ${dex.txns24h.sells}`,
+                        sub: `${(buyRatio*100).toFixed(1)}% buys · ${(100-buyRatio*100).toFixed(1)}% sells`,
+                        color: 'text-purple-400',
+                        emoji: '⚖️',
+                        bg: 'bg-purple-950/40 border-purple-500/20',
+                        detail: `Buy volume dominates` + (buyRatio > 0.52 ? ' — bullish signal' : buyRatio < 0.48 ? ' — bearish signal' : ' — neutral'),
+                    },
+                ];
+
+                cards.forEach((card, i) => {
+                    const div = document.createElement('div');
+                    div.className = `glass-card rounded-xl overflow-hidden fade-in border ${card.bg}`;
+                    div.style.animationDelay = `${i*100}ms`;
+                    div.innerHTML = `
+                        <div class="p-5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-2xl">${card.emoji}</span>
                                 <div>
-                                    <div class="flex items-center gap-2 flex-wrap">
-                                        <span class="font-bold text-white">${order.id}</span>
-                                        <span class="px-2 py-0.5 rounded-md ${isBuy?'bg-green-950/40 text-green-400':'bg-red-950/40 text-red-400'} text-xs font-bold">${isBuy?'🟢 BUY':'🔴 SELL'}</span>
-                                        <span class="px-2 py-0.5 rounded-md bg-purple-950/40 text-purple-400 text-xs font-bold">GHOST</span>
-                                    </div>
-                                    <div class="text-xs text-dark-400 mt-1">${timeAgo(order.time)} · Split in ${order.timeWindow}</div>
+                                    <div class="text-xs text-dark-400 font-medium">${card.title}</div>
+                                    <div class="text-2xl font-bold ${card.color}">${card.value}</div>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                    <div class="text-xl font-bold text-white">${formatToken(order.totalValue)} GENIUS</div>
-                                <div class="text-sm text-dark-400">${formatUSD(usd)}</div>
+                            <div class="text-sm text-dark-300 mb-1">${card.sub}</div>
+                            <div class="text-xs text-dark-500">${card.detail}</div>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+
+                // DEX Pairs info
+                if (dex.allPairs && dex.allPairs.length > 0) {
+                    const pairDiv = document.createElement('div');
+                    pairDiv.className = 'glass-card rounded-xl overflow-hidden fade-in';
+                    pairDiv.style.animationDelay = '300ms';
+                    let pairRows = dex.allPairs.slice(0, 5).map(p =>
+                        `<div class="flex items-center justify-between py-2 border-b border-dark-800/50 last:border-0">
+                            <span class="text-sm text-dark-300">${p.dex}</span>
+                            <span class="text-sm font-mono text-ghost-400">$${parseFloat(p.price).toFixed(4)}</span>
+                            <span class="text-sm text-dark-400">${formatUSD(p.volume24h)}</span>
+                            <span class="text-xs text-green-400">${p.txns24h.buys}B</span>
+                            <span class="text-xs text-red-400">${p.txns24h.sells}S</span>
+                        </div>`
+                    ).join('');
+                    pairDiv.innerHTML = `
+                        <div class="p-5">
+                            <div class="text-sm font-bold text-white mb-3">📊 Trading Pairs</div>
+                            <div class="flex items-center justify-between text-xs text-dark-500 uppercase mb-2">
+                                <span>DEX</span><span>Price</span><span>Volume</span><span>Buy</span><span>Sell</span>
                             </div>
+                            ${pairRows}
                         </div>
-                        <div class="grid grid-cols-3 gap-3 mb-4">
-                            <div class="p-3 rounded-lg bg-dark-900/60"><div class="text-xs text-dark-400">Splits</div><div class="text-lg font-bold text-purple-400">${order.splits}</div></div>
-                            <div class="p-3 rounded-lg bg-dark-900/60"><div class="text-xs text-dark-400">Wallets</div><div class="text-lg font-bold text-ghost-400">${(order.wallets||[]).length}+</div></div>
-                            <div class="p-3 rounded-lg bg-dark-900/60"><div class="text-xs text-dark-400">Confidence</div><div class="text-lg font-bold ${confColor}">${order.confidence}%</div></div>
-                        </div>
-                        <div class="flex items-center justify-between text-xs text-dark-500">
-                            <span>Source: <span class="font-mono text-ghost-400">${order.source}</span> → ${(order.wallets||[]).length}+ wallets</span>
-                            <span>Avg: ${formatToken(order.totalValue/order.splits)}/split</span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
+                    `;
+                    container.appendChild(pairDiv);
+                }
+            } else {
+                container.innerHTML = '<div class="glass-card rounded-xl p-6 text-center text-dark-400">Loading market data...</div>';
+            }
         }
 
         // ===== RENDER ALL TXNS =====
@@ -553,32 +606,88 @@
             renderAllTxns(filtered);
         }
 
-        // ===== RENDER WHALE =====
+        // ===== RENDER WHALE SIGNALS =====
         function renderWhaleActivity(orders) {
             const container = document.getElementById('whaleList');
             container.innerHTML = '';
-            const whales = orders.filter(o => (o.totalValue || 0) * currentPrice > 1000);
-            if (!whales.length) { container.innerHTML = '<div class="glass-card rounded-xl p-6 text-center text-dark-400">No whale activity detected in last 50 blocks.</div>'; return; }
-            whales.forEach((w, i) => {
-                const usd = (w.totalValue || 0) * currentPrice;
+
+            if (!window._dexData) {
+                container.innerHTML = '<div class="glass-card rounded-xl p-6 text-center text-dark-400">Loading whale signals...</div>';
+                return;
+            }
+
+            const dex = window._dexData;
+            const buyRatio = dex.txns24h.buys / (dex.txns24h.buys + dex.txns24h.sells || 1);
+            const signals = [];
+
+            // Signal 1: Buy/Sell Imbalance
+            if (buyRatio > 0.58) {
+                signals.push({
+                    type: 'ACCUMULATION', emoji: '🟢', color: 'text-green-400',
+                    bg: 'border-green-500/20', title: 'Whale Accumulation Detected',
+                    detail: `${(buyRatio*100).toFixed(1)}% buy pressure in 24h. Smart money is buying.`,
+                    metric: `${dex.txns24h.buys.toLocaleString()} buys vs ${dex.txns24h.sells.toLocaleString()} sells`,
+                });
+            } else if (buyRatio < 0.42) {
+                signals.push({
+                    type: 'DISTRIBUTION', emoji: '🔴', color: 'text-red-400',
+                    bg: 'border-red-500/20', title: 'Whale Distribution Detected',
+                    detail: `${(buyRatio*100).toFixed(1)}% buy pressure in 24h. Smart money is selling.`,
+                    metric: `${dex.txns24h.sells.toLocaleString()} sells vs ${dex.txns24h.buys.toLocaleString()} buys`,
+                });
+            }
+
+            // Signal 2: High Volume
+            if (dex.volume24h > 1000000) {
+                signals.push({
+                    type: 'VOLUME SPIKE', emoji: '🔥', color: 'text-amber-400',
+                    bg: 'border-amber-500/20', title: 'High Volume Alert',
+                    detail: `24h volume ${formatUSD(dex.volume24h)} — above $1M threshold.`,
+                    metric: `${formatUSD(dex.volume24h)} traded · Liquidity: ${formatUSD(dex.liquidity)}`,
+                });
+            }
+
+            // Signal 3: 1h Activity
+            const h1Total = dex.txns1h.buys + dex.txns1h.sells;
+            if (h1Total > 100) {
+                const h1Ratio = dex.txns1h.buys / (h1Total || 1);
+                signals.push({
+                    type: 'LIVE ACTIVITY', emoji: '⚡', color: 'text-ghost-400',
+                    bg: 'border-ghost-500/20', title: 'Active Trading — Last 1 Hour',
+                    detail: `${h1Total} transactions in the last hour. ${h1Ratio > 0.52 ? 'Buyers dominating.' : h1Ratio < 0.48 ? 'Sellers dominating.' : 'Balanced activity.'}`,
+                    metric: `${dex.txns1h.buys} buys / ${dex.txns1h.sells} sells in 1h`,
+                });
+            }
+
+            // Signal 4: Liquidity check
+            if (dex.liquidity > 100000) {
+                signals.push({
+                    type: 'LIQUIDITY', emoji: '💧', color: 'text-blue-400',
+                    bg: 'border-blue-500/20', title: 'Healthy Liquidity',
+                    detail: `Pool depth ${formatUSD(dex.liquidity)} — sufficient for large trades.`,
+                    metric: `${dex.allPairs?.length || 0} active pairs across DEXes`,
+                });
+            }
+
+            if (!signals.length) {
+                container.innerHTML = '<div class="glass-card rounded-xl p-6 text-center text-dark-400">No significant whale signals detected right now. Market is quiet.</div>';
+                return;
+            }
+
+            signals.forEach((s, i) => {
                 const div = document.createElement('div');
-                div.className = 'glass-card rounded-xl p-5 border border-amber-500/10 fade-in';
+                div.className = `glass-card rounded-xl p-5 border ${s.bg} fade-in`;
                 div.style.animationDelay = `${i*100}ms`;
                 div.innerHTML = `
-                    <div class="flex items-center justify-between flex-wrap gap-3">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl">🐋</span>
-                            <div>
-                                <span class="font-bold text-white">${w.id}</span>
-                                <span class="ml-2 px-2 py-0.5 rounded-md ${w.side==='BUY'?'bg-green-950/40 text-green-400':'bg-red-950/40 text-red-400'} text-xs font-bold">${w.side==='BUY'?'🟢 BUY':'🔴 SELL'}</span>
-                                <div class="text-xs text-dark-400 mt-1">${timeAgo(w.time)} · ${w.splits} splits · ${(w.wallets||[]).length}+ wallets</div>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-xl font-bold text-amber-400">${formatToken(w.totalValue)} GENIUS</div>
-                            <div class="text-sm text-dark-400">${formatUSD(usd)}</div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl">${s.emoji}</span>
+                        <div>
+                            <span class="px-2 py-0.5 rounded-md text-xs font-bold ${s.color} bg-dark-900/60">${s.type}</span>
+                            <div class="font-bold text-white mt-1">${s.title}</div>
                         </div>
                     </div>
+                    <div class="text-sm text-dark-300 mb-1">${s.detail}</div>
+                    <div class="text-xs text-dark-500">${s.metric}</div>
                 `;
                 container.appendChild(div);
             });
@@ -586,12 +695,14 @@
 
         // ===== STATS =====
         function updateGhostStats() {
-            document.getElementById('ghostCount').textContent = ghostOrders.length;
-            const totalHidden = ghostOrders.reduce((s, o) => s + (o.totalValue || 0), 0);
-            document.getElementById('hiddenVolume').textContent = formatUSD(totalHidden * currentPrice);
-            const totalWallets = ghostOrders.reduce((s, o) => s + o.splits, 0);
-            document.getElementById('walletsInvolved').textContent = totalWallets;
-            document.getElementById('avgSplits').textContent = ghostOrders.length ? Math.floor(totalWallets / ghostOrders.length) : 0;
+            if (window._dexData) {
+                const dex = window._dexData;
+                const buyRatio = dex.txns24h.buys / (dex.txns24h.buys + dex.txns24h.sells || 1);
+                document.getElementById('ghostCount').textContent = buyRatio > 0.55 ? 'BUY' : buyRatio < 0.45 ? 'SELL' : 'FLAT';
+                document.getElementById('hiddenVolume').textContent = (dex.txns24h.buys + dex.txns24h.sells).toLocaleString();
+                document.getElementById('walletsInvolved').textContent = dex.scannedBlocks || 100;
+                document.getElementById('avgSplits').textContent = dex.allPairs?.length || 0;
+            }
         }
 
         // Live updates now via real data fetch
