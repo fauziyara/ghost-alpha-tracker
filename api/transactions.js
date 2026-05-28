@@ -159,9 +159,30 @@ module.exports = async function (req, res) {
     });
     ghostOrders.sort((a, b) => b.totalVolume - a.totalVolume);
 
+    // Fetch CoinGecko tickers (CEX markets)
+    let cexTickers = [];
+    try {
+      const cgResp = await fetch('https://api.coingecko.com/api/v3/coins/genius-terminal/tickers?include_exchange_logo=false&depth=false');
+      const cg = await cgResp.json();
+      if (cg.tickers) {
+        cexTickers = cg.tickers.map(t => ({
+          exchange: t.market?.name || 'Unknown',
+          pair: t.base + '/' + t.target,
+          price: t.last || 0,
+          volume24h: t.volume || 0,
+          spread: t.bid_ask_spread_percentage || 0,
+          isAnomaly: t.is_anomaly || false,
+          isStale: t.is_stale || false,
+          trust: t.trust_score || 'green',
+          tradeUrl: t.trade_url || '',
+        })).filter(t => !t.isStale && !t.isAnomaly);
+      }
+    } catch (e) { console.error('CoinGecko tickers:', e); }
+
     return res.status(200).json({
       latestBlock,
       dexScreener: dexData,
+      cexTickers,
       onChainTransfers: allTransfers.length,
       transfers: allTransfers.slice(0, 20),
       ghostOrders: ghostOrders.slice(0, 10),

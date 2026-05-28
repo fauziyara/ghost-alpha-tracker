@@ -480,6 +480,9 @@
                     document.getElementById('dexLiquidity').textContent = formatUSD(dex.liquidity || 0);
                 }
 
+                // Store CEX tickers
+                window._cexTickers = d.cexTickers || [];
+
                 renderGhostOrders(ghostOrders);
                 renderAllTxns(allTxns);
                 renderWhaleActivity(ghostOrders);
@@ -576,25 +579,86 @@
                     container.appendChild(div);
                 });
 
-                // DEX Pairs info
+                // Trading Pairs — DEX + CEX All Markets
+                const allMarkets = [];
+                
+                // Add DEX pairs
                 if (dex.allPairs && dex.allPairs.length > 0) {
+                    dex.allPairs.forEach(p => {
+                        allMarkets.push({
+                            type: 'DEX',
+                            exchange: p.dex || 'Unknown',
+                            pair: (p.baseToken || 'GENIUS') + '/' + (p.quoteToken || 'BNB'),
+                            price: p.price || 0,
+                            volume24h: p.volume24h || 0,
+                            buys: p.txns24h?.buys || 0,
+                            sells: p.txns24h?.sells || 0,
+                        });
+                    });
+                }
+
+                // Add CEX tickers
+                if (window._cexTickers && window._cexTickers.length > 0) {
+                    window._cexTickers.forEach(t => {
+                        allMarkets.push({
+                            type: 'CEX',
+                            exchange: t.exchange || 'Unknown',
+                            pair: t.pair || 'GENIUS/USDT',
+                            price: t.price || 0,
+                            volume24h: t.volume24h || 0,
+                            trust: t.trust || 'green',
+                            tradeUrl: t.tradeUrl || '',
+                        });
+                    });
+                }
+
+                if (allMarkets.length > 0) {
                     const pairDiv = document.createElement('div');
                     pairDiv.className = 'glass-card rounded-xl overflow-hidden fade-in';
                     pairDiv.style.animationDelay = '300ms';
-                    let pairRows = dex.allPairs.slice(0, 5).map(p =>
-                        `<div class="flex items-center justify-between py-2 border-b border-dark-800/50 last:border-0">
-                            <span class="text-sm text-dark-300">${p.dex}</span>
-                            <span class="text-sm font-mono text-ghost-400">$${parseFloat(p.price).toFixed(4)}</span>
-                            <span class="text-sm text-dark-400">${formatUSD(p.volume24h)}</span>
-                            <span class="text-xs text-green-400">${p.txns24h.buys}B</span>
-                            <span class="text-xs text-red-400">${p.txns24h.sells}S</span>
-                        </div>`
-                    ).join('');
+                    
+                    // Sort by volume
+                    allMarkets.sort((a, b) => b.volume24h - a.volume24h);
+                    
+                    let pairRows = allMarkets.slice(0, 10).map(p => {
+                        const typeBadge = p.type === 'DEX' 
+                            ? '<span class="text-xs px-1.5 py-0.5 rounded bg-purple-950/50 text-purple-400">DEX</span>'
+                            : '<span class="text-xs px-1.5 py-0.5 rounded bg-blue-950/50 text-blue-400">CEX</span>';
+                        const tradeLink = p.tradeUrl 
+                            ? `<a href="${p.tradeUrl}" target="_blank" class="text-xs text-ghost-400 hover:text-ghost-300">Trade ↗</a>`
+                            : '';
+                        const buySell = p.buys !== undefined 
+                            ? `<span class="text-xs text-green-400">${p.buys}B</span> <span class="text-xs text-red-400">${p.sells}S</span>`
+                            : `<span class="text-xs text-dark-500">—</span>`;
+                        
+                        return `<div class="flex items-center justify-between py-2.5 border-b border-dark-800/50 last:border-0 hover:bg-dark-900/30 transition">
+                            <div class="flex items-center gap-2 w-28">
+                                ${typeBadge}
+                                <span class="text-sm text-dark-200 truncate">${p.exchange}</span>
+                            </div>
+                            <span class="text-xs text-dark-400 w-24">${p.pair}</span>
+                            <span class="text-sm font-mono text-ghost-400 w-20 text-right">$${parseFloat(p.price).toFixed(4)}</span>
+                            <span class="text-sm text-dark-300 w-20 text-right">${formatUSD(p.volume24h)}</span>
+                            <div class="w-20 text-right flex items-center justify-end gap-1">
+                                ${buySell}
+                            </div>
+                            <div class="w-16 text-right">${tradeLink}</div>
+                        </div>`;
+                    }).join('');
+
                     pairDiv.innerHTML = `
                         <div class="p-5">
-                            <div class="text-sm font-bold text-white mb-3">📊 Trading Pairs</div>
-                            <div class="flex items-center justify-between text-xs text-dark-500 uppercase mb-2">
-                                <span>DEX</span><span>Price</span><span>Volume</span><span>Buy</span><span>Sell</span>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="text-sm font-bold text-white">📊 All Markets (DEX + CEX)</div>
+                                <div class="text-xs text-dark-500">${allMarkets.length} markets found</div>
+                            </div>
+                            <div class="flex items-center justify-between text-xs text-dark-500 uppercase mb-2 px-1">
+                                <span class="w-28">Exchange</span>
+                                <span class="w-24">Pair</span>
+                                <span class="w-20 text-right">Price</span>
+                                <span class="w-20 text-right">Volume 24h</span>
+                                <span class="w-20 text-right">B/S</span>
+                                <span class="w-16 text-right">Link</span>
                             </div>
                             ${pairRows}
                         </div>
