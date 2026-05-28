@@ -612,8 +612,10 @@
                             pair: t.pair || 'GENIUS/USDT',
                             price: t.price || 0,
                             volume24h: t.volume24h || 0,
-                            trust: t.trust || 'green',
-                            tradeUrl: t.tradeUrl || '',
+                            change24h: t.change24h || 0,
+                            trades24h: t.trades24h || 0,
+                            high24h: t.high24h || 0,
+                            low24h: t.low24h || 0,
                         });
                     });
                 }
@@ -630,12 +632,12 @@
                         const typeBadge = p.type === 'DEX' 
                             ? '<span class="text-xs px-1.5 py-0.5 rounded bg-purple-950/50 text-purple-400">DEX</span>'
                             : '<span class="text-xs px-1.5 py-0.5 rounded bg-blue-950/50 text-blue-400">CEX</span>';
-                        const tradeLink = p.tradeUrl 
-                            ? `<a href="${p.tradeUrl}" target="_blank" class="text-xs text-ghost-400 hover:text-ghost-300">Trade ↗</a>`
-                            : '';
+                        const changeStr = p.change24h !== undefined && p.change24h !== 0
+                            ? `<span class="text-xs ${p.change24h >= 0 ? 'text-green-400' : 'text-red-400'}">${p.change24h >= 0 ? '+' : ''}${p.change24h.toFixed(2)}%</span>`
+                            : `<span class="text-xs text-dark-500">—</span>`;
                         const buySell = p.buys !== undefined 
                             ? `<span class="text-xs text-green-400">${p.buys}B</span> <span class="text-xs text-red-400">${p.sells}S</span>`
-                            : `<span class="text-xs text-dark-500">—</span>`;
+                            : (p.trades24h ? `<span class="text-xs text-dark-400">${(p.trades24h/1000).toFixed(1)}k trades</span>` : `<span class="text-xs text-dark-500">—</span>`);
                         
                         return `<div class="flex items-center justify-between py-2.5 border-b border-dark-800/50 last:border-0 hover:bg-dark-900/30 transition">
                             <div class="flex items-center gap-2 w-28">
@@ -645,10 +647,10 @@
                             <span class="text-xs text-dark-400 w-24">${p.pair}</span>
                             <span class="text-sm font-mono text-ghost-400 w-20 text-right">$${parseFloat(p.price).toFixed(4)}</span>
                             <span class="text-sm text-dark-300 w-20 text-right">${formatUSD(p.volume24h)}</span>
+                            <div class="w-20 text-right">${changeStr}</div>
                             <div class="w-20 text-right flex items-center justify-end gap-1">
                                 ${buySell}
                             </div>
-                            <div class="w-16 text-right">${tradeLink}</div>
                         </div>`;
                     }).join('');
 
@@ -656,15 +658,15 @@
                         <div class="p-5">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="text-sm font-bold text-white">📊 All Markets (DEX + CEX)</div>
-                                <div class="text-xs text-dark-500">${allMarkets.length} markets found</div>
+                                <div class="text-xs text-dark-500">${allMarkets.length} markets · Binance · MEXC · HTX + DEX</div>
                             </div>
                             <div class="flex items-center justify-between text-xs text-dark-500 uppercase mb-2 px-1">
                                 <span class="w-28">Exchange</span>
                                 <span class="w-24">Pair</span>
                                 <span class="w-20 text-right">Price</span>
                                 <span class="w-20 text-right">Volume 24h</span>
-                                <span class="w-20 text-right">B/S</span>
-                                <span class="w-16 text-right">Link</span>
+                                <span class="w-20 text-right">24h</span>
+                                <span class="w-20 text-right">Activity</span>
                             </div>
                             ${pairRows}
                         </div>

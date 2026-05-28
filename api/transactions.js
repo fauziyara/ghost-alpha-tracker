@@ -159,23 +159,61 @@ module.exports = async function (req, res) {
     });
     ghostOrders.sort((a, b) => b.totalVolume - a.totalVolume);
 
-    // Fetch CoinGecko tickers (CEX markets)
-    let cexTickers = [];
+    // Fetch CEX data directly from Binance, MEXC, HTX
+    const cexTickers = [];
+    const cexFetches = [
+      { name: 'Binance', url: 'https://api.binance.com/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
+      { name: 'MEXC', url: 'https://api.mexc.com/api/v3/ticker/24hr?symbol=GENIUSUSDT' },
+      { name: 'HTX', url: 'https://api.huobi.pro/market/detail/merged?symbol=geniususdt' },
+    ];
+    
+    await Promise.all(cexFetches.map(async ({ name, url }) => {
+      try {
+        const r = await fetch(url);
+        const d = await r.json();
+        if (name === 'HTX' && d.status === 'ok') {
+          const t = d.tick;
+          cexTickers.push({
+            exchange: 'HTX',
+            pair: 'GENIUS/USDT',
+            price: t.close || 0,
+            volume24h: t.vol || 0,
+            high24h: t.high || 0,
+            low24h: t.low || 0,
+            change24h: ((t.close - t.open) / t.open * 100) || 0,
+            trades24h: t.count || 0,
+          });
+        } else if (d.symbol) {
+          cexTickers.push({
+            exchange: name,
+            pair: 'GENIUS/USDT',
+            price: parseFloat(d.lastPrice) || 0,
+            volume24h: parseFloat(d.quoteVolume) || 0,
+            high24h: parseFloat(d.highPrice) || 0,
+            low24h: parseFloat(d.lowPrice) || 0,
+            change24h: parseFloat(d.priceChangePercent) || 0,
+            trades24h: parseInt(d.count) || 0,
+          });
+        }
+      } catch (e) { console.error(`${name}:`, e); }
+    }));
+
+    // Also try CoinGecko for any extra exchanges
     try {
       const cgResp = await fetch('https://api.coingecko.com/api/v3/coins/genius-terminal/tickers?include_exchange_logo=false&depth=false');
       const cg = await cgResp.json();
       if (cg.tickers) {
-        cexTickers = cg.tickers.map(t => ({
-          exchange: t.market?.name || 'Unknown',
-          pair: t.base + '/' + t.target,
-          price: t.last || 0,
-          volume24h: t.volume || 0,
-          spread: t.bid_ask_spread_percentage || 0,
-          isAnomaly: t.is_anomaly || false,
-          isStale: t.is_stale || false,
-          trust: t.trust_score || 'green',
-          tradeUrl: t.trade_url || '',
-        })).filter(t => !t.isStale && !t.isAnomaly);
+        cg.tickers.forEach(t => {
+          const exName = t.market?.name || 'Unknown';
+          if (!['Binance','MEXC','HTX'].includes(exName) && !t.is_stale && !t.is_anomaly) {
+            cexTickers.push({
+              exchange: exName,
+              pair: t.base + '/' + t.target,
+              price: t.last || 0,
+              volume24h: t.volume || 0,
+            });
+          }
+        });
       }
     } catch (e) { console.error('CoinGecko tickers:', e); }
 
