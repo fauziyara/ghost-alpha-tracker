@@ -728,8 +728,8 @@
 
             if (needle) {
                 // Map buyRatio (0-1) to rotation (-90 to +90)
-                // buyRatio 1.0 = -90 (full left/buy), 0.0 = +90 (full right/sell), 0.5 = 0 (center)
-                const rotation = (1 - buyRatio) * 180 - 90;
+                // buyRatio 1.0 = +90 (full right/buy), 0.0 = -90 (full left/sell), 0.5 = 0 (center)
+                const rotation = buyRatio * 180 - 90;
                 needle.setAttribute('transform', `rotate(${rotation}, 100, 100)`);
                 needle.style.transition = 'transform 1s ease-out';
 
